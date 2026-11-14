@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Tokyo Night Storm — Kitty",
+  "version": "1.0.0",
+  "description": "A dark Chrome theme matching the Tokyo Night Terminal Storm palette in your Kitty configuration.",
+  "theme": {
+    "colors": {
+      "frame": [14, 16, 23],
+      "frame_inactive": [36, 40, 59],
+      "frame_incognito": [14, 16, 23],
+      "frame_incognito_inactive": [36, 40, 59],
+      "toolbar": [36, 40, 59],
+      "tab_text": [213, 214, 219],
+      "tab_background_text": [120, 124, 153],
+      "tab_background_text_inactive": [120, 124, 153],
+      "tab_background_text_incognito": [187, 154, 247],
+      "tab_background_text_incognito_inactive": [120, 124, 153],
+      "bookmark_text": [213, 214, 219],
+      "toolbar_button_icon": [134, 152, 223],
+      "toolbar_top_separator": [68, 75, 106],
+      "toolbar_bottom_separator": [14, 16, 23],
+      "toolbar_vertical_separator": [68, 75, 106],
+      "omnibox_background": [14, 16, 23],
+      "omnibox_text": [213, 214, 219],
+      "ntp_background": [14, 16, 23],
+      "ntp_text": [213, 214, 219],
+      "ntp_link": [134, 152, 223],
+      "ntp_header": [120, 124, 153],
+      "ntp_section": [36, 40, 59],
+      "ntp_section_text": [213, 214, 219],
+      "ntp_section_link": [187, 154, 247],
+      "button_background": [36, 40, 59]
+    },
+    "properties": {
+      "ntp_logo_alternate": 1
+    }
+  }
+}

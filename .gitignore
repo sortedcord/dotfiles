@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+
+# Chrome extension cache
+Cached Theme.pak

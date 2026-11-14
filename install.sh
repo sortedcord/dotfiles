@@ -2,9 +2,13 @@
 # Symlink the dotfiles into the config directory (default: ~/.config).
 # Any existing file/folder/symlink at a target path is renamed to <name>.old first.
 # Set TARGET to override the destination, e.g. TARGET=/tmp/test ./install.sh
+# The GTK theme is only installed when TARGET is not overridden.
+# Also installs the GTK theme (gtk-theme-tokyo-night) via its activate.py.
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_GTK=1
+if [ -n "${TARGET:-}" ]; then INSTALL_GTK=0; fi
 TARGET="${TARGET:-$HOME/.config}"
 
 ITEMS=(
@@ -54,3 +58,21 @@ for item in "${ITEMS[@]}"; do
   ln -s "$src" "$dst"
   echo "linked:  $dst -> $src"
 done
+
+# GTK theme: links ~/.local/share/themes/TokyoNightKitty to the repo and
+# applies it (sets GTK 3/4 settings and CSS, backs up the previous ones).
+if [ "$INSTALL_GTK" -eq 1 ]; then
+  gtk_dir="$DOTFILES/gtk-theme-tokyo-night"
+  gtk_link="$HOME/.local/share/themes/TokyoNightKitty"
+
+  if [ -L "$gtk_link" ] && [ "$(readlink -f "$gtk_link")" = "$(readlink -f "$gtk_dir")" ]; then
+    echo "ok:      GTK theme already installed"
+  else
+    # A dangling link (e.g. the project was moved) must go before activate.py can recreate it.
+    if [ -L "$gtk_link" ] && [ ! -e "$gtk_link" ]; then
+      rm "$gtk_link"
+      echo "removed: broken GTK theme link $gtk_link"
+    fi
+    python3 "$gtk_dir/activate.py"
+  fi
+fi

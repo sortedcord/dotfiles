@@ -1,0 +1,123 @@
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
+/* Generated from ~/.config/kitty/colors.conf by build.py. */
+@define-color theme_bg_color #0e1017;
+@define-color theme_fg_color #D5D6DB;
+@define-color theme_base_color #0e1017;
+@define-color theme_text_color #D5D6DB;
+@define-color theme_selected_bg_color #8698df;
+@define-color theme_selected_fg_color #0e1017;
+@define-color theme_unfocused_bg_color #0e1017;
+@define-color theme_unfocused_fg_color #787C99;
+@define-color theme_unfocused_base_color #0e1017;
+@define-color theme_unfocused_text_color #787C99;
+@define-color theme_unfocused_selected_bg_color #444B6A;
+@define-color theme_unfocused_selected_fg_color #D5D6DB;
+@define-color insensitive_bg_color #24283B;
+@define-color insensitive_fg_color #787C99;
+@define-color insensitive_base_color #0e1017;
+@define-color borders #444B6A;
+@define-color unfocused_borders #24283B;
+@define-color warning_color #E0AF68;
+@define-color error_color #F7768E;
+@define-color success_color #41A6B5;
+@define-color link_color #8698df;
+@define-color link_visited_color #BB9AF7;
+@define-color accent_bg_color #8698df;
+@define-color accent_fg_color #0e1017;
+@define-color accent_color #8698df;
+@define-color destructive_bg_color #F7768E;
+@define-color destructive_fg_color #0e1017;
+@define-color destructive_color #F7768E;
+@define-color success_bg_color #41A6B5;
+@define-color success_fg_color #0e1017;
+@define-color warning_bg_color #E0AF68;
+@define-color warning_fg_color #0e1017;
+@define-color error_bg_color #F7768E;
+@define-color error_fg_color #0e1017;
+@define-color window_bg_color #0e1017;
+@define-color window_fg_color #D5D6DB;
+@define-color view_bg_color #0e1017;
+@define-color view_fg_color #D5D6DB;
+@define-color headerbar_bg_color #24283B;
+@define-color headerbar_fg_color #D5D6DB;
+@define-color headerbar_border_color #444B6A;
+@define-color headerbar_backdrop_color #0e1017;
+@define-color headerbar_shade_color rgba(0, 0, 0, 0.24);
+@define-color headerbar_darker_shade_color rgba(0, 0, 0, 0.4);
+@define-color sidebar_bg_color #24283B;
+@define-color sidebar_fg_color #D5D6DB;
+@define-color sidebar_backdrop_color #24283B;
+@define-color sidebar_border_color #444B6A;
+@define-color sidebar_shade_color rgba(0, 0, 0, 0.24);
+@define-color secondary_sidebar_bg_color #0e1017;
+@define-color secondary_sidebar_fg_color #D5D6DB;
+@define-color secondary_sidebar_backdrop_color #0e1017;
+@define-color secondary_sidebar_border_color #444B6A;
+@define-color secondary_sidebar_shade_color rgba(0, 0, 0, 0.24);
+@define-color card_bg_color #24283B;
+@define-color card_fg_color #D5D6DB;
+@define-color card_shade_color rgba(0, 0, 0, 0.24);
+@define-color dialog_bg_color #24283B;
+@define-color dialog_fg_color #D5D6DB;
+@define-color popover_bg_color #24283B;
+@define-color popover_fg_color #D5D6DB;
+@define-color popover_shade_color rgba(0, 0, 0, 0.24);
+@define-color thumbnail_bg_color #24283B;
+@define-color thumbnail_fg_color #D5D6DB;
+@define-color shade_color rgba(0, 0, 0, 0.24);
+@define-color scrollbar_outline_color #0e1017;
+
+.background { background-color: #0e1017; color: #D5D6DB; }
+headerbar, .titlebar, toolbar, .toolbar {
+  background-image: none; background-color: #24283B; color: #D5D6DB;
+  border-color: #444B6A;
+}
+.view, textview text, treeview.view, iconview {
+  background-color: #0e1017; color: #D5D6DB;
+}
+entry, spinbutton:not(.vertical), searchentry {
+  background-image: none; background-color: #0e1017; color: #D5D6DB;
+  border-color: #444B6A; caret-color: #D5D6DB;
+}
+entry:focus, entry:focus-within { border-color: #8698df; }
+button:not(.flat):not(.suggested-action):not(.destructive-action) {
+  background-image: none; background-color: #24283B; color: #D5D6DB;
+  border-color: #444B6A; text-shadow: none;
+}
+button:not(.flat):not(.suggested-action):not(.destructive-action):hover {
+  background-color: #444B6A;
+}
+button:checked, button:active, button.suggested-action {
+  background-image: none; background-color: #8698df; color: #0e1017;
+}
+button.destructive-action {
+  background-image: none; background-color: #F7768E; color: #0e1017;
+}
+button:disabled, entry:disabled { color: #787C99; }
+selection, textview text selection, entry selection,
+.view:selected, row:selected, flowboxchild:selected {
+  background-color: #8698df; color: #0e1017;
+}
+.sidebar, placessidebar, .navigation-sidebar {
+  background-color: #24283B; color: #D5D6DB;
+}
+menu, .menu, popover.background, popover > contents {
+  background-color: #24283B; color: #D5D6DB; border-color: #444B6A;
+}
+menuitem:hover { background-color: #444B6A; }
+notebook > header { background-color: #24283B; border-color: #444B6A; }
+notebook > header tab:checked { background-color: #0e1017; color: #D5D6DB; }
+notebook > header tab { color: #787C99; }
+separator { background-color: #444B6A; min-width: 1px; min-height: 1px; }
+progressbar progress, scale highlight { background-color: #8698df; border-color: #8698df; }
+progressbar trough, scale trough { background-color: #24283B; border-color: #444B6A; }
+scrollbar { background-color: #0e1017; }
+scrollbar slider { background-color: #444B6A; }
+scrollbar slider:hover { background-color: #787C99; }
+tooltip, tooltip.background { background-color: #24283B; color: #D5D6DB; }
+label.dim-label, .dim-label { color: #787C99; opacity: 1; }
+*:link { color: #8698df; }
+*:visited { color: #BB9AF7; }
+.warning { color: #E0AF68; }
+.error { color: #F7768E; }
+.success { color: #41A6B5; }
