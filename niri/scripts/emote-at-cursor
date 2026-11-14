@@ -4,8 +4,9 @@
 Niri has no placement rule for the cursor, so this script:
   1. reads the cursor position from `niri msg --json cursor-position`,
   2. asks Emote to show its picker (starting the daemon if needed),
-  3. waits for the floating Emote window, moves it under the cursor, and
-     corrects any offset niri applied (e.g. the top bar's working area).
+  3. waits for the floating Emote window, moves its top-left corner to the
+     cursor, and corrects any offset niri applies (e.g. the top bar's
+     working area).
 """
 
 import json
@@ -65,10 +66,12 @@ def main():
         return 1
 
     w, h = win["layout"]["window_size"]
-    # Centre the picker on the cursor, keeping it inside the cursor's output.
+    # Place the window's top-left corner at the cursor, shifting it back
+    # only if it would overflow the cursor's output.
     left, top = logical["x"], logical["y"]
-    tx = min(max(cursor["x"] - w / 2, left), left + logical["width"] - w)
-    ty = min(max(cursor["y"] - h / 2, top), top + logical["height"] - h)
+    tx = min(cursor["x"], left + logical["width"] - w)
+    ty = min(cursor["y"], top + logical["height"] - h)
+    tx, ty = max(tx, left), max(ty, top)
 
     move(win["id"], round(tx), round(ty))
 
