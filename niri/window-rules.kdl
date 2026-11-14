@@ -28,6 +28,12 @@ window-rule {
     open-floating true
 }
 
+// Open the Emote emoji picker (source build and Flatpak/dev IDs) as floating.
+window-rule {
+    match app-id=r#"^com\.tomjwatson\.Emote(\.Devel)?$"#
+    open-floating true
+}
+
 // Open Bitwarden (extension popup or desktop app) as floating by default.
 window-rule {
     match app-id=r#"chrome-nngceckbapebfimnlniiiahkandclblb"#
