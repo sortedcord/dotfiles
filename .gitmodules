@@ -1,0 +1,6 @@
+[submodule "nvim"]
+	path = nvim
+	url = git@github.com:sortedcord/nvimconfig.git
+[submodule "quickshell"]
+	path = quickshell
+	url = git@github.com:sortedcord/doalot.git
