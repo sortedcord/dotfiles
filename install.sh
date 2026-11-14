@@ -62,13 +62,18 @@ done
 
 # keyd: /etc/keyd is root-owned, so this step uses sudo.
 # Existing files there are renamed to <name>.old first, like the user items above.
+# Every file in KEYD_FILES is linked into /etc/keyd.
 if [ "$INSTALL_SYSTEM" -eq 1 ]; then
-  keyd_src="$DOTFILES/keyd/default.conf"
-  keyd_dst="/etc/keyd/default.conf"
+  KEYD_FILES=(default.conf rkn80.conf)
+  keyd_changed=0
+  for keyd_name in "${KEYD_FILES[@]}"; do
+    keyd_src="$DOTFILES/keyd/$keyd_name"
+    keyd_dst="/etc/keyd/$keyd_name"
 
-  if [ -L "$keyd_dst" ] && [ "$(readlink -f "$keyd_dst")" = "$(readlink -f "$keyd_src")" ]; then
-    echo "ok:      $keyd_dst already linked"
-  else
+    if [ -L "$keyd_dst" ] && [ "$(readlink -f "$keyd_dst")" = "$(readlink -f "$keyd_src")" ]; then
+      echo "ok:      $keyd_dst already linked"
+      continue
+    fi
     if [ -e "$keyd_dst" ] || [ -L "$keyd_dst" ]; then
       keyd_old="$keyd_dst.old"
       if sudo test -e "$keyd_old" || sudo test -L "$keyd_old"; then
@@ -79,6 +84,9 @@ if [ "$INSTALL_SYSTEM" -eq 1 ]; then
     fi
     sudo ln -s "$keyd_src" "$keyd_dst"
     echo "linked:  $keyd_dst -> $keyd_src"
+    keyd_changed=1
+  done
+  if [ "$keyd_changed" -eq 1 ]; then
     echo "hint:    run 'sudo keyd reload' to apply the keyd config"
   fi
 fi

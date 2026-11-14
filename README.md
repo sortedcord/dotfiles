@@ -13,7 +13,7 @@ My personal configs for Arch Linux: niri, kitty, mako, yazi, zellij, Neovim, qui
 
 - **Howdy (Moto):** https://github.com/sortedcord/howdy-moto
 - **Touchpad enhancements:** https://github.com/sortedcord/touchpad-enhancements
-- **keyd:** key remapping config, linked to `/etc/keyd/default.conf` by the installer (uses `sudo`). Reload with `sudo keyd reload`.
+- **keyd:** key remapping config in `keyd/`. The installer links `default.conf` and `rkn80.conf` into `/etc/keyd/` (uses `sudo`). Reload with `sudo keyd reload`.
 
 ## Clone
 
