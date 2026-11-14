@@ -63,9 +63,10 @@ TARGET=/tmp/dotfiles-test ./install.sh
 ```sh
 cd ~/Projects/dotfiles
 git pull --recurse-submodules
+git submodule update --init --recursive --remote --merge
 ```
 
-Changes to `nvim/` or `quickshell/` are committed in their own repos. After pushing those, commit the updated submodule pointer in this repo.
+`nvim/` tracks `master` and `quickshell/` tracks `main` (set in `.gitmodules`), so `--remote` moves each one to its branch tip instead of the commit recorded earlier. Changes to those submodules are committed and pushed in their own repos first. Then commit the updated submodule pointer here so it records the new commit.
 
 ## Credits
 

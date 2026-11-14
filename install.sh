@@ -25,8 +25,8 @@ ITEMS=(
   user-dirs.dirs
 )
 
-# Make sure the submodules (nvim, quickshell) are populated.
-git -C "$DOTFILES" submodule update --init --recursive
+# Populate the submodules at the latest commit of the branch set in .gitmodules.
+git -C "$DOTFILES" submodule update --init --recursive --remote
 
 mkdir -p "$TARGET"
 timestamp="$(date +%Y%m%d-%H%M%S)"
