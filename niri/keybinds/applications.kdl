@@ -7,6 +7,7 @@ binds {
     Alt+Shift+W repeat=false hotkey-overlay-title="Wi-Fi: Copilot+W" { spawn "quickshell" "ipc" "call" "launcher" "wifi"; }
     Alt+Shift+B repeat=false hotkey-overlay-title="Bluetooth: Copilot+B" { spawn "quickshell" "ipc" "call" "launcher" "bluetooth"; }
     Alt+Shift+R repeat=false hotkey-overlay-title="Camera: Copilot+R" { spawn "quickshell" "ipc" "call" "launcher" "camera"; }
+    Mod+Period hotkey-overlay-title="Emoji Picker: Emote" { spawn "sh" "-c" "cd $HOME/Applications/emote && exec pipenv run start"; }
     Mod+D hotkey-overlay-title="Run an Application: Quickshell launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
     Mod+W hotkey-overlay-title="Switch Window: Quickshell" { spawn "quickshell" "ipc" "call" "launcher" "windows"; }
     Mod+B hotkey-overlay-title="New Helium Window" { spawn "/home/sortedcord/Applications/helium/helium-wrapper" "--new-window"; }
