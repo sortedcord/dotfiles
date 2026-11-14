@@ -35,7 +35,7 @@ window-rule {
 window-rule {
     match app-id=r#"^com\.tomjwatson\.Emote(\.Devel)?$"#
     open-floating true
-    float-spawn mode="smart-edge" width=515 height=500 distance=0
+    float-spawn mode="smart-edge" width=515 height=500 distance=20
 }
 
 // Open Bitwarden (extension popup or desktop app) as floating by default.
