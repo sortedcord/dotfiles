@@ -8,6 +8,9 @@ My personal configs for Arch Linux: niri, kitty, mako, yazi, zellij, Neovim, qui
 - **Helium fork (helide):** https://github.com/sortedcord/helide
 - **Neovim config:** https://github.com/sortedcord/nvimconfig (included as the `nvim/` submodule)
 - **Quickshell config:** https://github.com/sortedcord/doalot (included as the `quickshell/` submodule)
+
+## Other things I use
+
 - **Howdy (Moto):** https://github.com/sortedcord/howdy-moto
 - **Touchpad enhancements:** https://github.com/sortedcord/touchpad-enhancements
 
