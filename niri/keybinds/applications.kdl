@@ -10,7 +10,6 @@ binds {
     Mod+Period hotkey-overlay-title="Emoji Picker: Emote" { spawn "sh" "-c" "cd $HOME/Applications/emote && exec pipenv run start"; }
     Mod+D hotkey-overlay-title="Run an Application: Quickshell launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
     Mod+W hotkey-overlay-title="Switch Window: Quickshell" { spawn "quickshell" "ipc" "call" "launcher" "windows"; }
-    Ctrl+L repeat=false hotkey-overlay-title="Helium address bar (island); passes through elsewhere" { spawn "sh" "-c" "exec $HOME/.config/quickshell/scripts/address-bar-key.sh"; }
     Mod+B hotkey-overlay-title="New Helium Window" { spawn "/home/sortedcord/Applications/helium/helium-wrapper" "--new-window"; }
     Mod+Shift+B hotkey-overlay-title="New Helium Private Window" { spawn "/home/sortedcord/Applications/helium/helium-wrapper" "--incognito" "--new-window"; }
     Mod+Ctrl+B hotkey-overlay-title="Bluetooth Settings" { spawn "blueman-manager"; }
