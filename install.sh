@@ -2,13 +2,14 @@
 # Symlink the dotfiles into the config directory (default: ~/.config).
 # Any existing file/folder/symlink at a target path is renamed to <name>.old first.
 # Set TARGET to override the destination, e.g. TARGET=/tmp/test ./install.sh
-# The GTK theme is only installed when TARGET is not overridden.
+# The GTK theme and the system keyd config (/etc/keyd) are only installed when TARGET is not overridden.
 # Also installs the GTK theme (gtk-theme-tokyo-night) via its activate.py.
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_GTK=1
-if [ -n "${TARGET:-}" ]; then INSTALL_GTK=0; fi
+INSTALL_SYSTEM=1
+if [ -n "${TARGET:-}" ]; then INSTALL_GTK=0; INSTALL_SYSTEM=0; fi
 TARGET="${TARGET:-$HOME/.config}"
 
 ITEMS=(
@@ -58,6 +59,29 @@ for item in "${ITEMS[@]}"; do
   ln -s "$src" "$dst"
   echo "linked:  $dst -> $src"
 done
+
+# keyd: /etc/keyd is root-owned, so this step uses sudo.
+# Existing files there are renamed to <name>.old first, like the user items above.
+if [ "$INSTALL_SYSTEM" -eq 1 ]; then
+  keyd_src="$DOTFILES/keyd/default.conf"
+  keyd_dst="/etc/keyd/default.conf"
+
+  if [ -L "$keyd_dst" ] && [ "$(readlink -f "$keyd_dst")" = "$(readlink -f "$keyd_src")" ]; then
+    echo "ok:      $keyd_dst already linked"
+  else
+    if [ -e "$keyd_dst" ] || [ -L "$keyd_dst" ]; then
+      keyd_old="$keyd_dst.old"
+      if sudo test -e "$keyd_old" || sudo test -L "$keyd_old"; then
+        keyd_old="$keyd_dst.old.$timestamp"
+      fi
+      sudo mv "$keyd_dst" "$keyd_old"
+      echo "renamed: $keyd_dst -> $keyd_old"
+    fi
+    sudo ln -s "$keyd_src" "$keyd_dst"
+    echo "linked:  $keyd_dst -> $keyd_src"
+    echo "hint:    run 'sudo keyd reload' to apply the keyd config"
+  fi
+fi
 
 # GTK theme: links ~/.local/share/themes/TokyoNightKitty to the repo and
 # applies it (sets GTK 3/4 settings and CSS, backs up the previous ones).
