@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+"""Open the Emote picker centred on the mouse cursor.
+
+Niri has no placement rule for the cursor, so this script:
+  1. reads the cursor position from `niri msg --json cursor-position`,
+  2. asks Emote to show its picker (starting the daemon if needed),
+  3. waits for the floating Emote window, moves it under the cursor, and
+     corrects any offset niri applied (e.g. the top bar's working area).
+"""
+
+import json
+import os
+import subprocess
+import sys
+import time
+
+EMOTE_DIR = os.path.expanduser("~/Applications/emote")
+APP_IDS = ("com.tomjwatson.Emote", "com.tomjwatson.Emote.Devel")
+
+
+def niri(*args):
+    out = subprocess.run(["niri", "msg", "--json", *args],
+                         capture_output=True, text=True, check=True).stdout
+    return json.loads(out)
+
+
+def move(win_id, x_arg, y_arg):
+    subprocess.run(["niri", "msg", "action", "move-floating-window",
+                    "--id", str(win_id), f"--x={x_arg}", f"--y={y_arg}"],
+                   check=False)
+
+
+def emote_window():
+    for win in niri("windows"):
+        if win.get("app_id") in APP_IDS and win.get("is_floating"):
+            return win
+    return None
+
+
+def main():
+    cursor = niri("cursor-position")
+    out = niri("outputs").get(cursor["output"])
+    if out is None:
+        return 1
+    logical = out["logical"]
+
+    # Start/activate Emote. If the daemon is already running this just
+    # presents the picker; otherwise it starts the daemon first.
+    subprocess.Popen(
+        ["sh", "-c", "exec pipenv run start"],
+        cwd=EMOTE_DIR,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+
+    win = None
+    for _ in range(60):
+        win = emote_window()
+        if win:
+            break
+        time.sleep(0.05)
+    if win is None:
+        return 1
+
+    w, h = win["layout"]["window_size"]
+    # Centre the picker on the cursor, keeping it inside the cursor's output.
+    left, top = logical["x"], logical["y"]
+    tx = min(max(cursor["x"] - w / 2, left), left + logical["width"] - w)
+    ty = min(max(cursor["y"] - h / 2, top), top + logical["height"] - h)
+
+    move(win["id"], round(tx), round(ty))
+
+    # Niri may place the window slightly differently (working-area offsets),
+    # so measure and correct with relative moves.
+    for _ in range(3):
+        time.sleep(0.05)
+        cur = next((x for x in niri("windows") if x["id"] == win["id"]), None)
+        if cur is None:
+            break
+        ax, ay = cur["layout"]["tile_pos_in_workspace_view"]
+        dx, dy = round(tx - ax), round(ty - ay)
+        if dx == 0 and dy == 0:
+            break
+        move(win["id"], f"{dx:+d}", f"{dy:+d}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
