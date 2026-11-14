@@ -28,10 +28,14 @@ window-rule {
     open-floating true
 }
 
-// Open the Emote emoji picker (source build and Flatpak/dev IDs) as floating.
+// Open the Emote emoji picker (source build and Flatpak/dev IDs) as floating,
+// placed at the cursor. Smart-edge anchors the nearest window corner (or edge)
+// to the cursor near screen edges and centres it on the cursor elsewhere.
+// width/height must match the size Emote requests (see the picker window).
 window-rule {
     match app-id=r#"^com\.tomjwatson\.Emote(\.Devel)?$"#
     open-floating true
+    float-spawn mode="smart-edge" width=515 height=500 distance=0
 }
 
 // Open Bitwarden (extension popup or desktop app) as floating by default.
