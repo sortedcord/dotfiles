@@ -3,4 +3,6 @@ binds {
     Ctrl+Print { screenshot-screen; }
     Alt+Print  { screenshot-window; }
     Mod+S hotkey-overlay-title="Screenshot or record" { spawn "quickshell" "ipc" "call" "launcher" "capture"; }
+    Mod+Shift+S hotkey-overlay-title="Screenshot: area" { spawn-sh "exec \"$HOME/.local/bin/capture-run\" screenshot area"; }
+    Alt+Shift+S hotkey-overlay-title="Screenshot: current screen" { spawn-sh "exec \"$HOME/.local/bin/capture-run\" screenshot screen"; }
 }
