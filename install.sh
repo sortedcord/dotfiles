@@ -91,6 +91,42 @@ if [ "$INSTALL_SYSTEM" -eq 1 ]; then
   fi
 fi
 
+# Power tuning: power/ files are linked into the system config dirs (uses sudo).
+# Same rename-to-.old rule as keyd. Each entry is "<source name>:<destination dir>".
+if [ "$INSTALL_SYSTEM" -eq 1 ]; then
+  POWER_FILES=(
+    99-battery.conf:/etc/sysctl.d
+    snd-hda-intel-power.conf:/etc/modprobe.d
+    90-pci-runtime-pm.rules:/etc/udev/rules.d
+  )
+  power_changed=0
+  for power_entry in "${POWER_FILES[@]}"; do
+    power_name="${power_entry%%:*}"
+    power_dir="${power_entry#*:}"
+    power_src="$DOTFILES/power/$power_name"
+    power_dst="$power_dir/$power_name"
+
+    if [ -L "$power_dst" ] && [ "$(readlink -f "$power_dst")" = "$(readlink -f "$power_src")" ]; then
+      echo "ok:      $power_dst already linked"
+      continue
+    fi
+    if [ -e "$power_dst" ] || [ -L "$power_dst" ]; then
+      power_old="$power_dst.old"
+      if sudo test -e "$power_old" || sudo test -L "$power_old"; then
+        power_old="$power_dst.old.$timestamp"
+      fi
+      sudo mv "$power_dst" "$power_old"
+      echo "renamed: $power_dst -> $power_old"
+    fi
+    sudo ln -s "$power_src" "$power_dst"
+    echo "linked:  $power_dst -> $power_src"
+    power_changed=1
+  done
+  if [ "$power_changed" -eq 1 ]; then
+    echo "hint:    run 'sudo sysctl --system && sudo udevadm control --reload && sudo udevadm trigger --subsystem-match=pci --action=add' to apply power tuning now, or reboot"
+  fi
+fi
+
 # GTK theme: links ~/.local/share/themes/TokyoNightKitty to the repo and
 # applies it (sets GTK 3/4 settings and CSS, backs up the previous ones).
 if [ "$INSTALL_GTK" -eq 1 ]; then

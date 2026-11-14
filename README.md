@@ -15,6 +15,8 @@ My personal configs for Arch Linux: niri, kitty, mako, yazi, zellij, Neovim, qui
 - **Touchpad enhancements:** https://github.com/sortedcord/touchpad-enhancements
 - **keyd:** key remapping config in `keyd/`. The installer links `default.conf` and `rkn80.conf` into `/etc/keyd/` (uses `sudo`). Reload with `sudo keyd reload`.
 
+- **Power tuning:** files in `power/` are linked into the system config directories by `install.sh` (uses `sudo`): `99-battery.conf` to `/etc/sysctl.d/`, `snd-hda-intel-power.conf` to `/etc/modprobe.d/`, and `90-pci-runtime-pm.rules` to `/etc/udev/rules.d/`. They take effect on reboot, or immediately with `sudo sysctl --system && sudo udevadm control --reload && sudo udevadm trigger --subsystem-match=pci --action=add`.
+
 ## Clone
 
 Clone with submodules so `nvim/` and `quickshell/` are populated:
