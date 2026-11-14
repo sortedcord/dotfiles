@@ -1,0 +1,20 @@
+[opener]
+edit = [
+    { run = "nvim %s", block = true, for = "unix" },
+]
+
+video = [
+    { run = "mpv --hwdec=auto %s", desc = "Play with mpv", orphan = true, for = "linux" },
+]
+
+wine = [
+    { run = "wine %s", desc = "Run with Wine", orphan = true, for = "linux" },
+]
+
+[open]
+prepend_rules = [
+    { mime = "text/*", use = "edit" },
+    { mime = "video/*", use = "video" },
+    { url = "*.[eE][xX][eE]", use = "wine" },
+    { url = "*.[mM][sS][iI]", use = "wine" },
+]

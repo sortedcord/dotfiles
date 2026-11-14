@@ -1,0 +1,89 @@
+# Tokyo Night Storm palette from ~/.config/kitty/colors.conf
+
+[app]
+overall = { bg = "#0e1017" }
+
+[mgr]
+cwd = { fg = "#7DCFFF", bold = true }
+find_keyword = { fg = "#0e1017", bg = "#E0AF68", bold = true }
+find_position = { fg = "#BB9AF7", bold = true }
+symlink_target = { fg = "#7DCFFF", italic = true }
+marker_copied = { fg = "#41A6B5", bold = true }
+marker_cut = { fg = "#F7768E", bold = true }
+marker_marked = { fg = "#BB9AF7", bold = true }
+marker_selected = { fg = "#E0AF68", bold = true }
+count_copied = { fg = "#0e1017", bg = "#41A6B5", bold = true }
+count_cut = { fg = "#0e1017", bg = "#F7768E", bold = true }
+count_selected = { fg = "#0e1017", bg = "#E0AF68", bold = true }
+border_style = { fg = "#444B6A" }
+
+[tabs]
+active = { fg = "#0e1017", bg = "#7AA2F7", bold = true }
+inactive = { fg = "#787C99", bg = "#24283B" }
+
+[mode]
+normal_main = { fg = "#0e1017", bg = "#7AA2F7", bold = true }
+normal_alt = { fg = "#7AA2F7", bg = "#24283B" }
+select_main = { fg = "#0e1017", bg = "#BB9AF7", bold = true }
+select_alt = { fg = "#BB9AF7", bg = "#24283B" }
+unset_main = { fg = "#0e1017", bg = "#F7768E", bold = true }
+unset_alt = { fg = "#F7768E", bg = "#24283B" }
+
+[status]
+overall = { fg = "#D5D6DB", bg = "#24283B" }
+perm_type = { fg = "#7AA2F7" }
+perm_read = { fg = "#41A6B5" }
+perm_write = { fg = "#E0AF68" }
+perm_exec = { fg = "#7DCFFF" }
+perm_sep = { fg = "#444B6A" }
+progress_label = { fg = "#D5D6DB", bold = true }
+progress_normal = { fg = "#7DCFFF", bg = "#24283B" }
+progress_error = { fg = "#F7768E", bg = "#24283B" }
+
+[which]
+border = { fg = "#444B6A" }
+mask = { bg = "#24283B" }
+cand = { fg = "#7DCFFF", bold = true }
+rest = { fg = "#787C99" }
+desc = { fg = "#BB9AF7" }
+separator_style = { fg = "#444B6A" }
+
+[confirm]
+border = { fg = "#444B6A" }
+title = { fg = "#7DCFFF", bold = true }
+body = { fg = "#D5D6DB" }
+list = { fg = "#787C99" }
+btn_yes = { fg = "#0e1017", bg = "#41A6B5", bold = true }
+btn_no = { fg = "#0e1017", bg = "#F7768E", bold = true }
+
+[spot]
+border = { fg = "#444B6A" }
+title = { fg = "#7DCFFF", bold = true }
+tbl_col = { fg = "#BB9AF7", bold = true }
+tbl_cell = { fg = "#D5D6DB" }
+
+[pick]
+border = { fg = "#444B6A" }
+active = { fg = "#0e1017", bg = "#7AA2F7", bold = true }
+inactive = { fg = "#787C99" }
+
+[input]
+border = { fg = "#444B6A" }
+title = { fg = "#7DCFFF", bold = true }
+value = { fg = "#D5D6DB" }
+selected = { fg = "#0e1017", bg = "#7AA2F7" }
+
+[notify]
+title_info = { fg = "#7DCFFF", bold = true }
+title_warn = { fg = "#E0AF68", bold = true }
+title_error = { fg = "#F7768E", bold = true }
+
+[filetype]
+rules = [
+    { url = "*/", fg = "#7AA2F7" },
+    { url = "*", is = "exec", fg = "#41A6B5" },
+    { url = "*", is = "link", fg = "#7DCFFF" },
+    { url = "*", is = "orphan", fg = "#F7768E" },
+    { mime = "image/*", fg = "#BB9AF7" },
+    { mime = "{audio,video}/*", fg = "#E0AF68" },
+]

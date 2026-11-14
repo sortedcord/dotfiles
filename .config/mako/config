@@ -1,0 +1,25 @@
+# Niri-matched dark surface with the active focus-ring blue as the accent.
+font=Noto Sans 11
+background-color=#171923F2
+text-color=#E8EAF0FF
+border-color=#8698DFFF
+border-size=2
+border-radius=14
+width=380
+height=160
+margin=8
+padding=12
+outer-margin=12
+anchor=top-right
+layer=overlay
+max-visible=4
+icons=1
+max-icon-size=36
+progress-color=over #A5B4FCFF
+
+default-timeout=5000
+ignore-timeout=1
+
+# Bluetooth connect/disconnect toasts are shown in the Quickshell island instead.
+[app-name=blueman body~="^(Connected|Disconnected)"]
+invisible=1

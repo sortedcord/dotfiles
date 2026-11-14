@@ -1,0 +1,358 @@
+#!/usr/bin/env python3
+"""Event-driven AC/video and battery/static wallpaper controller.
+
+Requires python-gobject (Gio), UPower, mpvpaper, swaybg and ffmpeg.
+GDM is intentionally independent of this program.
+"""
+
+import asyncio
+import contextlib
+import fcntl
+import json
+import logging
+import math
+import os
+from pathlib import Path
+import signal
+import threading
+
+from gi.repository import Gio, GLib
+
+HOME = Path.home()
+STATE = HOME / ".local/state/niri-power-wallpaper"
+RUNTIME = Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}"))
+VIDEO = HOME / "Pictures/Wallpapers/forgotten-man-deltarune-wedgewood-1920x1200.mp4"
+FALLBACK = HOME / "Pictures/Wallpapers/xiaomi.jpg"
+FRAME = STATE / "unplug-frame.png"
+RESUME = STATE / "resume-position"
+SOCKET = RUNTIME / "niri-wallpaper-mpv.sock"
+LOG = logging.getLogger("niri-power-wallpaper")
+
+
+async def terminate(process):
+    """Reap only our child, trying graceful shutdown before SIGKILL."""
+    if process is None:
+        return
+    if process.returncode is None:
+        with contextlib.suppress(ProcessLookupError):
+            process.terminate()
+    try:
+        await asyncio.wait_for(process.wait(), 1)
+    except TimeoutError:
+        with contextlib.suppress(ProcessLookupError):
+            process.kill()
+        await process.wait()
+
+
+class IPC:
+    async def __aenter__(self):
+        self.reader, self.writer = await asyncio.wait_for(
+            asyncio.open_unix_connection(str(SOCKET)), 1
+        )
+        self.request_id = 0
+        return self
+
+    async def __aexit__(self, *_):
+        self.writer.close()
+        with contextlib.suppress(OSError, TimeoutError):
+            await asyncio.wait_for(self.writer.wait_closed(), 1)
+
+    async def command(self, *command, timeout=2):
+        self.request_id += 1
+        request_id = self.request_id
+        async with asyncio.timeout(timeout):
+            self.writer.write((json.dumps({
+                "command": command, "request_id": request_id,
+            }) + "\n").encode())
+            await self.writer.drain()
+            while True:
+                line = await self.reader.readline()
+                if not line:
+                    raise ConnectionError("mpv closed the IPC connection")
+                reply = json.loads(line)
+                if reply.get("request_id") != request_id:
+                    continue
+                if reply.get("error") != "success":
+                    raise RuntimeError(f"mpv {command[0]}: {reply.get('error')}")
+                return reply.get("data")
+
+
+def valid_position(value):
+    return (isinstance(value, (int, float)) and not isinstance(value, bool)
+            and math.isfinite(value) and value >= 0)
+
+
+def save_position(position):
+    temporary = RESUME.with_suffix(".tmp")
+    temporary.write_text(f"{position:.6f}\n")
+    temporary.replace(RESUME)
+
+
+class Wallpaper:
+    def __init__(self):
+        self.loop = asyncio.get_running_loop()
+        self.changed = asyncio.Event()
+        self.online = None
+        self.stopping = False
+        self.failure = None
+        self.player = None
+        self.static = None
+        self.static_image = None
+        self.video_ready = False
+        self.screenshot_supported = True
+        self.watchers = set()
+
+    def power_changed(self, online):
+        if online != self.online:
+            self.online = online
+            LOG.info("external power %s", "connected" if online else "disconnected")
+            self.changed.set()
+
+    def stop(self):
+        self.stopping = True
+        self.changed.set()
+
+    def monitor_failed(self, message):
+        self.failure = message
+        LOG.error("power monitor: %s", message)
+        self.stop()
+
+    def watch(self, process, role):
+        async def exited():
+            code = await process.wait()
+            if getattr(self, role) is process and not self.stopping:
+                LOG.warning("%s exited (%s); scheduling recovery", role, code)
+                # Startup failures are handled by reconcile's bounded retry,
+                # not by an event that would bypass backoff on every crash.
+                if role != "player" or self.video_ready:
+                    self.changed.set()
+        task = asyncio.create_task(exited())
+        self.watchers.add(task)
+        task.add_done_callback(self.watchers.discard)
+
+    async def stop_player(self):
+        process, self.player = self.player, None
+        self.video_ready = False
+        await terminate(process)
+        SOCKET.unlink(missing_ok=True)
+
+    async def stop_static(self):
+        process, self.static = self.static, None
+        self.static_image = None
+        await terminate(process)
+
+    async def show_static(self):
+        image = FRAME if FRAME.is_file() and FRAME.stat().st_size else FALLBACK
+        if (self.static is not None and self.static.returncode is None
+                and self.static_image == image):
+            return
+        process = await asyncio.create_subprocess_exec("swaybg", "-i", str(image), "-m", "fill")
+        try:
+            await asyncio.sleep(0.2)
+            if process.returncode is not None:
+                raise RuntimeError(f"swaybg exited during startup ({process.returncode})")
+            await self.stop_static()
+        except BaseException:
+            await terminate(process)
+            raise
+        self.static = process
+        self.static_image = image
+        self.watch(process, "static")
+        LOG.info("showing static wallpaper: %s", image)
+
+    async def start_player(self):
+        await self.stop_player()
+        await self.show_static()
+        options = ["no-audio", "loop-file=inf", "panscan=1", "hwdec=vaapi",
+                   "cache=no", "terminal=no", "input-terminal=no", "no-config",
+                   f"input-ipc-server={SOCKET}"]
+        try:
+            position = float(RESUME.read_text().strip())
+            if valid_position(position):
+                options.append(f"start={position}")
+                LOG.info("resuming at %.3fs", position)
+        except (OSError, ValueError):
+            pass
+        # Auto-pause uses compositor frame callbacks; do not depend on advancing
+        # time-pos for readiness, since an obscured wallpaper may already pause.
+        self.player = await asyncio.create_subprocess_exec(
+            "mpvpaper", "--auto-pause", "-o", " ".join(options), "ALL", str(VIDEO)
+        )
+        self.watch(self.player, "player")
+        async with asyncio.timeout(10):
+            while self.player.returncode is None:
+                try:
+                    async with IPC() as ipc:
+                        if await ipc.command("get_property", "vo-configured"):
+                            position = await ipc.command("get_property", "time-pos")
+                            if valid_position(position):
+                                await asyncio.sleep(0.2)
+                                await self.stop_static()
+                                self.video_ready = True
+                                LOG.info("playing video wallpaper")
+                                return
+                except (OSError, RuntimeError, ValueError, TimeoutError):
+                    pass
+                await asyncio.sleep(0.1)
+        raise RuntimeError("mpvpaper exited before becoming ready")
+
+    async def capture_frame(self):
+        if self.player is None or self.player.returncode is not None:
+            return
+        # A power change can cancel capture after pausing. Restart from the
+        # saved position on AC instead of mistaking that paused player for ready.
+        self.video_ready = False
+        temporary = FRAME.with_name("unplug-frame.tmp.png")
+        temporary.unlink(missing_ok=True)
+        try:
+            async with IPC() as ipc:
+                await ipc.command("set_property", "pause", True)
+                position = await ipc.command("get_property", "time-pos")
+                if not valid_position(position):
+                    raise RuntimeError("mpv returned an invalid playback position")
+                # Preserve resume position even if screenshot/PNG generation fails.
+                save_position(position)
+                if self.screenshot_supported:
+                    try:
+                        await ipc.command("screenshot-to-file", str(temporary), "video")
+                    except (RuntimeError, TimeoutError):
+                        self.screenshot_supported = False
+                        LOG.info("mpv screenshots unavailable; using bounded FFmpeg fallback")
+            if not temporary.is_file() or not temporary.stat().st_size:
+                process = await asyncio.create_subprocess_exec(
+                    "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                    "-threads", "1", "-ss", str(position), "-i", str(VIDEO),
+                    "-map", "0:v:0", "-frames:v", "1", "-threads", "1",
+                    "-update", "1", "-y", str(temporary),
+                )
+                try:
+                    code = await asyncio.wait_for(process.wait(), 8)
+                    if code:
+                        raise RuntimeError(f"ffmpeg exited ({code})")
+                finally:
+                    await terminate(process)
+            if not temporary.is_file() or not temporary.stat().st_size:
+                raise RuntimeError("empty captured frame")
+            temporary.replace(FRAME)
+            # Force replacement if an older frame is currently displayed.
+            self.static_image = None
+            LOG.info("saved battery wallpaper and resume position at %.3fs", position)
+        except (OSError, RuntimeError, ValueError, TimeoutError) as error:
+            LOG.warning("capture failed; retaining previous frame: %s", error)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+    async def reconcile(self):
+        if self.online:
+            if self.player is None or self.player.returncode is not None or not self.video_ready:
+                try:
+                    await self.start_player()
+                except (OSError, RuntimeError, ValueError, TimeoutError):
+                    await self.stop_player()
+                    await self.show_static()
+                    raise
+        else:
+            await self.capture_frame()
+            # End playback even if the static image cannot be loaded.
+            try:
+                await self.show_static()
+            finally:
+                await self.stop_player()
+
+    async def run(self):
+        retry_delay = 2
+        try:
+            while not self.stopping:
+                if self.online is None:
+                    self.changed.clear()
+                    await self.changed.wait()
+                    continue
+                self.changed.clear()
+                operation = asyncio.create_task(self.reconcile())
+                interrupt = asyncio.create_task(self.changed.wait())
+                success = False
+                try:
+                    await asyncio.wait([operation, interrupt], return_when=asyncio.FIRST_COMPLETED)
+                    if not operation.done():
+                        operation.cancel()
+                    else:
+                        try:
+                            operation.result()
+                            success = True
+                        except (OSError, RuntimeError, ValueError, TimeoutError) as error:
+                            LOG.warning("wallpaper transition failed: %s", error)
+                finally:
+                    interrupt.cancel()
+                    if not operation.done():
+                        operation.cancel()
+                    await asyncio.gather(operation, interrupt, return_exceptions=True)
+                if self.changed.is_set():
+                    continue
+                if success:
+                    retry_delay = 2
+                    await self.changed.wait()
+                else:
+                    try:
+                        await asyncio.wait_for(self.changed.wait(), retry_delay)
+                    except TimeoutError:
+                        pass
+                    retry_delay = min(retry_delay * 2, 60)
+        finally:
+            await self.stop_player()
+            await self.stop_static()
+            if self.watchers:
+                await asyncio.gather(*self.watchers, return_exceptions=True)
+        if self.failure:
+            raise RuntimeError(self.failure)
+
+
+def monitor_power(controller):
+    """Gio dispatches D-Bus events in its own blocking GLib loop, not a poll loop."""
+    try:
+        proxy = Gio.DBusProxy.new_for_bus_sync(
+            Gio.BusType.SYSTEM, Gio.DBusProxyFlags.GET_INVALIDATED_PROPERTIES,
+            None, "org.freedesktop.UPower", "/org/freedesktop/UPower",
+            "org.freedesktop.UPower", None,
+        )
+
+        def publish(*_):
+            battery = proxy.get_cached_property("OnBattery")
+            # Fail safe during UPower restarts or missing properties.
+            online = bool(proxy.get_name_owner() and battery is not None and not battery.unpack())
+            controller.loop.call_soon_threadsafe(controller.power_changed, online)
+
+        proxy.connect("g-properties-changed", publish)
+        proxy.connect("notify::g-name-owner", publish)
+        proxy.get_connection().connect(
+            "closed", lambda *_: controller.loop.call_soon_threadsafe(
+                controller.monitor_failed, "system D-Bus disconnected"
+            )
+        )
+        publish()
+        GLib.MainLoop().run()
+    except Exception as error:
+        controller.loop.call_soon_threadsafe(controller.monitor_failed, str(error))
+
+
+async def main():
+    controller = Wallpaper()
+    for sig in (signal.SIGTERM, signal.SIGINT):
+        controller.loop.add_signal_handler(sig, controller.stop)
+    threading.Thread(target=monitor_power, args=(controller,), daemon=True).start()
+    await controller.run()
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="niri-power-wallpaper: %(message)s")
+    STATE.mkdir(parents=True, exist_ok=True)
+    with (RUNTIME / "niri-power-wallpaper.lock").open("w") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            LOG.error("another wallpaper controller is already running")
+            raise SystemExit(0)
+        try:
+            asyncio.run(main())
+        except (OSError, RuntimeError) as error:
+            LOG.error("%s", error)
+            raise SystemExit(1)

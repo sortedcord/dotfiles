@@ -1,0 +1,15 @@
+binds {
+    Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
+    Mod+Shift+Return hotkey-overlay-title="Open Zellij in Kitty" { spawn "kitty" "zellij"; }
+
+    Alt+Shift+E repeat=false hotkey-overlay-title="Power Profile: Copilot+E" { spawn "quickshell" "ipc" "call" "launcher" "power"; }
+    Alt+Shift+P repeat=false hotkey-overlay-title="Display Layout: Copilot+P" { spawn "quickshell" "ipc" "call" "launcher" "display"; }
+    Alt+Shift+W repeat=false hotkey-overlay-title="Wi-Fi: Copilot+W" { spawn "quickshell" "ipc" "call" "launcher" "wifi"; }
+    Alt+Shift+B repeat=false hotkey-overlay-title="Bluetooth: Copilot+B" { spawn "quickshell" "ipc" "call" "launcher" "bluetooth"; }
+    Alt+Shift+R repeat=false hotkey-overlay-title="Camera: Copilot+R" { spawn "quickshell" "ipc" "call" "launcher" "camera"; }
+    Mod+D hotkey-overlay-title="Run an Application: Quickshell launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
+    Mod+W hotkey-overlay-title="Switch Window: Quickshell" { spawn "quickshell" "ipc" "call" "launcher" "windows"; }
+    Mod+B hotkey-overlay-title="New Helium Window" { spawn "/home/sortedcord/Applications/helium/helium-wrapper" "--new-window"; }
+    Mod+Shift+B hotkey-overlay-title="New Helium Private Window" { spawn "/home/sortedcord/Applications/helium/helium-wrapper" "--incognito" "--new-window"; }
+    Mod+Ctrl+B hotkey-overlay-title="Bluetooth Settings" { spawn "blueman-manager"; }
+}

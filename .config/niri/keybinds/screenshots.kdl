@@ -1,0 +1,6 @@
+binds {
+    Print     { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print  { screenshot-window; }
+    Mod+S hotkey-overlay-title="Screenshot or record" { spawn "quickshell" "ipc" "call" "launcher" "capture"; }
+}
