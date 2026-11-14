@@ -25,14 +25,14 @@ Install FiraCode Nerd Font from the Arch repos or the Nerd Fonts project. Noto S
 
 Nerd Fonts don't include color emoji, so emoji fall back through fontconfig. The chain is:
 
-1. **Segoe UI Emoji** (`seguiemj.ttf`) is the primary emoji font. It's installed per-user at `~/.local/share/fonts/seguiemj.ttf`, copied from a Windows install. It's a proprietary Microsoft font, so it is **not** in this repo and must not be redistributed.
-2. **Noto Color Emoji** is the fallback for characters Segoe UI Emoji lacks, mainly Unicode 15 emoji such as the pink, grey, and light blue hearts (U+1FA75–1FA77). Install it with `sudo pacman -S noto-fonts-emoji`.
+1. **Segoe UI Emoji** (`seguiemj.ttf`) is the primary emoji font. It's installed per-user at `~/.local/share/fonts/seguiemj.ttf`. The installed build is the Segoe UI Emoji with Twemoji Flags file (`Segoe.UI.Emoji.with.Twemoji.Flags.ttf`), which adds flag glyphs and covers Unicode 15 emoji such as the pink, grey, and light blue hearts (U+1FA75–1FA77). It's a proprietary Microsoft font, so it is **not** in this repo and must not be redistributed.
+2. **Noto Color Emoji** is the fallback for any characters Segoe UI Emoji lacks. Install it with `sudo pacman -S noto-fonts-emoji`.
 
 Check the resolution with:
 
 ```sh
 fc-match "Fira Code Nerd Font:charset=1f495"   # expect Segoe UI Emoji
-fc-match "Fira Code Nerd Font:charset=1fa77"   # expect Noto Color Emoji
+fc-match "Fira Code Nerd Font:charset=1fa77"   # expect Segoe UI Emoji
 ```
 
 Note that `fc-match emoji` (the generic alias) returns Noto Color Emoji, because the generic alias ranks it first. Apps that use Fira Code's fallback get Segoe first.
@@ -42,5 +42,5 @@ Restart Kitty and the browser after installing or changing emoji fonts.
 ## Setup on a new machine
 
 1. Install FiraCode Nerd Font, Noto Sans (`noto-fonts`), and Noto Color Emoji (`noto-fonts-emoji`).
-2. Copy `seguiemj.ttf` from a Windows install to `~/.local/share/fonts/` (optional).
+2. Copy the Segoe UI Emoji with Twemoji Flags file to `~/.local/share/fonts/seguiemj.ttf` (optional).
 3. Run `fc-cache -f` and restart Kitty and the browser.
