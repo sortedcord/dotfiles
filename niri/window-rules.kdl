@@ -45,6 +45,12 @@ window-rule {
     open-floating true
 }
 
+// Open Satty (screenshot annotation) as floating by default.
+window-rule {
+    match app-id=r#"^com\.gabm\.satty$"#
+    open-floating true
+}
+
 // Example: block out two password managers from screen capture.
 // (This example rule is commented out with a "/-" in front.)
 /-window-rule {
