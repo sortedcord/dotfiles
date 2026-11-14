@@ -60,3 +60,7 @@ git pull --recurse-submodules
 ```
 
 Changes to `nvim/` or `quickshell/` are committed in their own repos. After pushing those, commit the updated submodule pointer in this repo.
+
+## Credits
+
+- **Flag emojis for Windows:** https://github.com/Chasmical/flag-emojis-for-windows
