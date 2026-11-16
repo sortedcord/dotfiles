@@ -48,9 +48,11 @@ binds {
     Mod+Shift+W { toggle-column-tabbed-display; }
 }
 
-// Cap Satty (screenshot annotation) at 1600x900 so it never grows past that size.
+// Cap Satty (screenshot annotation) at 1600x900 and open it centred on screen.
 window-rule {
     match app-id=r#"^com\.gabm\.satty$"#
+    open-floating true
     max-width 1600
     max-height 900
+    float-spawn mode="centered"
 }
