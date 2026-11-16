@@ -1,0 +1,43 @@
+#!/bin/sh
+# Turn niri's cleaning mode on or off.
+#
+# While it is on, niri ignores the keyboard, touchpad, mouse and touch screen, so they
+# can be wiped down without switching anything off. The screen goes black with a prompt;
+# type "clear" on the keyboard to leave.
+#
+# Needs the niri fork (https://github.com/sortedcord/niri) that has the
+# enter-cleaning-mode and exit-cleaning-mode actions.
+set -eu
+
+usage() {
+    cat <<USAGE
+Usage: cleaning-mode [on|off]
+
+  on   (default) Ignore all input until "clear" is typed on the keyboard.
+  off  Leave cleaning mode right away, for example from another TTY or over SSH.
+USAGE
+}
+
+case "${1:-on}" in
+    on | enter | start) action=enter-cleaning-mode ;;
+    off | exit | stop) action=exit-cleaning-mode ;;
+    -h | --help | help)
+        usage
+        exit 0
+        ;;
+    *)
+        usage >&2
+        exit 2
+        ;;
+esac
+
+if ! command -v niri >/dev/null 2>&1; then
+    echo "cleaning-mode: niri is not installed" >&2
+    exit 1
+fi
+
+if ! niri msg action "$action"; then
+    echo "cleaning-mode: 'niri msg action $action' failed." >&2
+    echo "Is niri running? It also has to be the sortedcord fork build, restarted (log out and in) after an update." >&2
+    exit 1
+fi
