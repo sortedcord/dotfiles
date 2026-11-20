@@ -1,0 +1,8 @@
+# Installed to /etc/systemd/system/ by install.sh.
+[Unit]
+Description=Disable i915 PSR on AC power, enable it on battery
+After=sys-kernel-debug.mount
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/motobook-psr

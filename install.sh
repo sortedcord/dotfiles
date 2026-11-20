@@ -98,6 +98,9 @@ if [ "$INSTALL_SYSTEM" -eq 1 ]; then
     99-battery.conf:/etc/sysctl.d
     snd-hda-intel-power.conf:/etc/modprobe.d
     90-pci-runtime-pm.rules:/etc/udev/rules.d
+    91-motobook-psr.rules:/etc/udev/rules.d
+    motobook-psr:/usr/local/bin
+    motobook-psr.service:/etc/systemd/system
   )
   power_changed=0
   for power_entry in "${POWER_FILES[@]}"; do
@@ -123,7 +126,7 @@ if [ "$INSTALL_SYSTEM" -eq 1 ]; then
     power_changed=1
   done
   if [ "$power_changed" -eq 1 ]; then
-    echo "hint:    run 'sudo sysctl --system && sudo udevadm control --reload && sudo udevadm trigger --subsystem-match=pci --action=add' to apply power tuning now, or reboot"
+    echo "hint:    run 'sudo sysctl --system && sudo udevadm control --reload && sudo systemctl daemon-reload && sudo udevadm trigger --subsystem-match=pci --subsystem-match=power_supply --action=add' to apply power tuning now, or reboot"
   fi
 fi
 

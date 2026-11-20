@@ -1,0 +1,4 @@
+# Installed to /etc/udev/rules.d/ by install.sh.
+# Re-apply the PSR setting whenever AC power changes, and when the GPU appears at boot.
+ACTION=="add|change", SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_TYPE}=="Mains", RUN+="/usr/bin/systemctl --no-block start motobook-psr.service"
+ACTION=="add", SUBSYSTEM=="drm", KERNEL=="card[0-9]*", DRIVERS=="i915", RUN+="/usr/bin/systemctl --no-block start motobook-psr.service"

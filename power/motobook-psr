@@ -1,0 +1,30 @@
+#!/bin/sh
+# Disable i915 Panel Self Refresh while on AC power, restore the default on battery.
+# Installed to /usr/local/bin/ by install.sh, run as root by motobook-psr.service.
+#
+# i915's enable_psr module parameter is read-only at runtime, so this uses the
+# debugfs PSR debug mode instead (takes effect without a modeset):
+#   0 = driver default (PSR enabled as the module parameter / panel allow)
+#   1 = PSR disabled
+set -eu
+
+online=""
+for ps in /sys/class/power_supply/*; do
+    [ "$(cat "$ps/type" 2>/dev/null)" = "Mains" ] || continue
+    if [ "$(cat "$ps/online" 2>/dev/null)" = "1" ]; then
+        online=1
+        break
+    fi
+    online=0
+done
+
+case "$online" in
+    1) mode=1 ;;
+    0) mode=0 ;;
+    *) exit 0 ;;
+esac
+
+for f in /sys/kernel/debug/dri/*/i915_edp_psr_debug; do
+    [ -w "$f" ] || continue
+    echo "$mode" > "$f"
+done
