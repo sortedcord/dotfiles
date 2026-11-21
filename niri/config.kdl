@@ -383,6 +383,17 @@ layer-rule {
     place-within-backdrop true
 }
 
+// Quickshell bar: in smart fullscreen (quickshell/core/Settings.qml) it sets a blur
+// region over the window underneath. Real (non-xray) blur, so it blurs that window
+// and not the wallpaper.
+layer-rule {
+    match namespace="^island-bar$"
+
+    background-effect {
+        xray false
+    }
+}
+
 include "keybinds/applications.kdl"
 include "keybinds/audio-media.kdl"
 include "keybinds/navigation.kdl"
