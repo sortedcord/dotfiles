@@ -6,6 +6,7 @@ My personal configs for Arch Linux: niri, kitty, mako, yazi, zellij, Neovim, qui
 
 - **niri fork:** https://github.com/sortedcord/niri (the niri build this config uses)
 - **Helium fork (helide):** https://github.com/sortedcord/helide
+- **wl-kbptr fork:** https://github.com/sortedcord/wl-kbptr (the `mouse-mode` branch adds a `mouse` mode: pick a spot, then move the pointer with `j`/`k`/`l`/`;` and click with `f`/`d`/`s` until `Escape`). Bound to `Mod+G` in `niri/keybinds/mouse.kdl`. Build and install it with `meson setup build --buildtype=release -Dopencv=enabled && meson compile -C build && sudo meson install -C build`.
 - **Neovim config:** https://github.com/sortedcord/nvimconfig (included as the `nvim/` submodule)
 - **Quickshell config:** https://github.com/sortedcord/doalot (included as the `quickshell/` submodule)
 

@@ -1,12 +1,16 @@
 // keybinds related to the keyboard pointer (wl-kbptr)
+// Uses the sortedcord/wl-kbptr fork (mouse-mode branch) for the `mouse` mode.
 
 binds {
-    // Floating mode with auto-detected targets
-    Mod+G repeat=false hotkey-overlay-title="Keyboard Pointer: floating" { spawn "wl-kbptr" "-o" "modes=floating" "-o" "mode_floating.source=detect"; }
+    // Mouse mode: pick an area with floating mode (auto-detected targets), then
+    // control the pointer from the keyboard until Escape.
+    //   j/k/l/;  move down/up/right/left (hold to repeat)
+    //   f/d/s    left/right/middle click (hold f while moving to drag)
+    Mod+G repeat=false hotkey-overlay-title="Keyboard Pointer: mouse mode" { spawn "wl-kbptr" "-o" "modes=floating,mouse" "-o" "mode_floating.source=detect"; }
 
     // Two selections: press at the first, release at the second
     Mod+Shift+G repeat=false hotkey-overlay-title="Keyboard Pointer: drag" { spawn "wl-kbptr" "--drag"; }
 
-    // Auto-detect clickable regions on screen (requires OpenCV build)
+    // Auto-detect clickable regions on screen (requires OpenCV build), then click
     Mod+Ctrl+G repeat=false hotkey-overlay-title="Keyboard Pointer: detect UI targets" { spawn "wl-kbptr" "-o" "modes=floating,click" "-o" "mode_floating.source=detect"; }
 }
