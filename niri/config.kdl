@@ -84,7 +84,7 @@ touchpad-gesture fingers=3 modifiers="any" {
 // unlocked, so one swipe can do both at once (move diagonally, or change direction
 // mid-swipe); horizontal motion scrolls whichever workspace is nearest the center.
 // Use lock-axis=true to lock each swipe to the axis it starts on.
-touchpad-gesture fingers=4 lock-axis=false {
+touchpad-gesture fingers=4 lock-axis=true {
     navigate
 }
 
@@ -162,6 +162,12 @@ layout {
     // continuously to the screen edges as it scrolls into view, and back to normal gaps as
     // it scrolls away. Replaces the old niri-smart-borders helper service.
     full-width-to-edges
+    // [niri fork] Where the top of such a window goes, ignoring the bar's exclusive
+    // zone. Quickshell's bar always reserves 58 px (so other windows never resize) and
+    // shrinks to a 40 px strip over an expanded window: keep this at its compact height
+    // (quickshell/core/Theme.qml compactBarHeight). Smart-fullscreen apps override it
+    // with 0 in window-rules.kdl.
+    full-width-to-edges-top 40
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left

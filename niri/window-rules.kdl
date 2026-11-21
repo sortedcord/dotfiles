@@ -51,6 +51,15 @@ window-rule {
     open-floating true
 }
 
+// Smart fullscreen: an expanded (full-width) kitty goes all the way to the top of
+// the screen, under the Quickshell bar, which then draws a fading tint instead of
+// its solid strip. Quickshell detects this from the window's height, so this list
+// is the only place to add more apps.
+window-rule {
+    match app-id="^kitty$"
+    full-width-to-edges-top 0
+}
+
 // Example: block out two password managers from screen capture.
 // (This example rule is commented out with a "/-" in front.)
 /-window-rule {
