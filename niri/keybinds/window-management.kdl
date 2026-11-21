@@ -1,7 +1,10 @@
+// keybinds related to window management
+// window rules go in window-rules.kdl
+
 binds {
     Mod+O repeat=false { toggle-overview; }
     Mod+Q repeat=false { close-window; }
-    Mod+Space { toggle-window-floating; }
+    Mod+Shift+Space { toggle-window-floating; }
 
     Mod+Ctrl+Down { move-window-down; }
     Mod+Ctrl+Up   { move-window-up; }
@@ -48,11 +51,3 @@ binds {
     Mod+Shift+W { toggle-column-tabbed-display; }
 }
 
-// Cap Satty (screenshot annotation) at 1600x900 and open it centred on screen.
-window-rule {
-    match app-id=r#"^com\.gabm\.satty$"#
-    open-floating true
-    max-width 1600
-    max-height 900
-    float-spawn mode="centered"
-}

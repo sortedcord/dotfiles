@@ -10,6 +10,7 @@ binds {
     Alt+Shift+V repeat=false hotkey-overlay-title="Voice reply (toggle dictation to pi): Copilot+V" { spawn "/home/sortedcord/Projects/stt_daemon/sttctl" "toggle"; }
     Mod+Period hotkey-overlay-title="Emoji Picker: Emote" { spawn "sh" "-c" "cd $HOME/Applications/emote && exec pipenv run start"; }
     Mod+D hotkey-overlay-title="Run an Application: Quickshell launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
+    Mod+Space repeat=false hotkey-overlay-title="Launcher: hyprbeam" { spawn "quickshell" "ipc" "call" "launcher" "hyprbeam"; }
     Mod+W hotkey-overlay-title="Switch Window: Quickshell" { spawn "quickshell" "ipc" "call" "launcher" "windows"; }
     Mod+B hotkey-overlay-title="New Helium Window" { spawn "/home/sortedcord/Applications/helium/helium-wrapper" "--new-window"; }
     Mod+Shift+B hotkey-overlay-title="New Helium Private Window" { spawn "/home/sortedcord/Applications/helium/helium-wrapper" "--incognito" "--new-window"; }
