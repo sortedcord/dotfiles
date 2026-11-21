@@ -391,6 +391,7 @@ layer-rule {
 
 include "keybinds/applications.kdl"
 include "keybinds/audio-media.kdl"
+include "keybinds/mouse.kdl"
 include "keybinds/navigation.kdl"
 include "keybinds/window-management.kdl"
 include "keybinds/workspaces.kdl"

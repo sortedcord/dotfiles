@@ -1,0 +1,12 @@
+// keybinds related to the keyboard pointer (wl-kbptr)
+
+binds {
+    // Default: tile + bisect, then click
+    Mod+G repeat=false hotkey-overlay-title="Keyboard Pointer: wl-kbptr" { spawn "wl-kbptr"; }
+
+    // Two selections: press at the first, release at the second
+    Mod+Shift+G repeat=false hotkey-overlay-title="Keyboard Pointer: drag" { spawn "wl-kbptr" "--drag"; }
+
+    // Auto-detect clickable regions on screen (requires OpenCV build)
+    Mod+Ctrl+G repeat=false hotkey-overlay-title="Keyboard Pointer: detect UI targets" { spawn "wl-kbptr" "-o" "modes=floating,click" "-o" "mode_floating.source=detect"; }
+}
