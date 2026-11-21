@@ -12,6 +12,8 @@ Source: Lenovo driver for machine type 83HT (IdeaPad Slim 5 14ARP10), XML
 
 Needs the LSP LV2 plugins (`lsp-plugins`).
 
+Standalone setup guide for other machines: [SETUP.md](SETUP.md).
+
 ## Regenerate
 
 ```
