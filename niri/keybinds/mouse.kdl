@@ -1,5 +1,5 @@
 // keybinds related to the keyboard pointer (wl-kbptr)
-// Uses the sortedcord/wl-kbptr fork (mouse-mode branch) for the `mouse` mode.
+// Uses the sortedcord/wl-kbptr fork for the `mouse` mode.
 
 binds {
     // Mouse mode: pick an area with floating mode (auto-detected targets), then
