@@ -20,6 +20,7 @@ ITEMS=(
   zellij
   nvim
   quickshell
+  pipewire
   helium-browser-flags.conf
   mimeapps.list
   user-dirs.dirs
