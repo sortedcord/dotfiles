@@ -326,6 +326,9 @@ layout {
 // Start Quickshell dynamic island and bar.
 spawn-at-startup "quickshell" "--no-duplicate"
 
+// Polkit authentication agent (password/Howdy prompts, Bitwarden biometrics).
+spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
 
