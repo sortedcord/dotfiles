@@ -18,3 +18,9 @@ prepend_rules = [
     { url = "*.[eE][xX][eE]", use = "wine" },
     { url = "*.[mM][sS][iI]", use = "wine" },
 ]
+
+[plugin]
+prepend_fetchers = [
+    { id = "mime", url = "/home/sortedcord/remotes/google/**", run = "noop" },
+    { id = "mime", url = "/home/sortedcord/remotes/google/**/", run = "noop" },
+]
