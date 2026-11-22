@@ -332,6 +332,22 @@ spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
 
+// Window switcher. niri owns the keys and the selection; the Quickshell left module
+// draws the list (workspace/SwitcherList.qml), so niri's own UI is off ("external").
+// Mod+Tab: every window. Alt+Tab: windows of the focused app. Releasing the modifier
+// switches; a tap quicker than the shell's 250 ms delay never shows the list.
+// chord-ms: Tab pressed less than 60 ms before Mod/Alt acts as Mod+Tab (Alt+Tab).
+recent-windows {
+    external
+    chord-ms 60
+    binds {
+        Mod+Tab { next-window; }
+        Mod+Shift+Tab { previous-window; }
+        Alt+Tab { next-window filter="app-id"; }
+        Alt+Shift+Tab { previous-window filter="app-id"; }
+    }
+}
+
 hotkey-overlay {
     // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
     skip-at-startup
