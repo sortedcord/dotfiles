@@ -20,6 +20,7 @@ ITEMS=(
   zellij
   nvim
   quickshell
+  swayimg
   pipewire
   helium-browser-flags.conf
   mimeapps.list
