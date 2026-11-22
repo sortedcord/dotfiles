@@ -30,3 +30,10 @@ swayimg.gallery.on_scroll(function(kmods, horizontal, vertical)
     end
   end
 end)
+
+-- q closes the app
+for _, mode in ipairs({ swayimg.viewer, swayimg.slideshow, swayimg.gallery }) do
+  mode.on_key("q", function()
+    swayimg.exit()
+  end)
+end
