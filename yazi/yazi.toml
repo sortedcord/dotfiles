@@ -21,6 +21,6 @@ prepend_rules = [
 
 [plugin]
 prepend_fetchers = [
-    { id = "mime", url = "/home/sortedcord/remotes/google/**", run = "noop" },
-    { id = "mime", url = "/home/sortedcord/remotes/google/**/", run = "noop" },
+    { url = "/home/sortedcord/remotes/google/**", run = "noop", group = "mime" },
+    { url = "/home/sortedcord/remotes/google/**/", run = "noop", group = "mime" },
 ]
