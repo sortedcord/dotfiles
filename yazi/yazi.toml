@@ -15,6 +15,10 @@ wine = [
 prepend_rules = [
     { mime = "text/*", use = "edit" },
     { mime = "video/*", use = "video" },
+    { url = "*.[mM][pP]4", use = "video" },
+    { url = "*.[mM][kK][vV]", use = "video" },
+    { url = "*.[wW][eE][bB][mM]", use = "video" },
+    { url = "*.[mM][oO][vV]", use = "video" },
     { url = "*.[eE][xX][eE]", use = "wine" },
     { url = "*.[mM][sS][iI]", use = "wine" },
 ]
