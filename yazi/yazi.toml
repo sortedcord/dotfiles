@@ -61,6 +61,6 @@ prepend_rules = [
 
 [plugin]
 prepend_fetchers = [
-    { url = "/home/sortedcord/remotes/google/**", run = "noop", group = "mime" },
+    { url = "/home/sortedcord/remotes/google/**", run = "ext-mime", group = "mime" },
     { url = "/home/sortedcord/remotes/google/**/", run = "noop", group = "mime" },
 ]
