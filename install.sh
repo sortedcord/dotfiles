@@ -22,7 +22,7 @@ ITEMS=(
   quickshell
   swayimg
   pipewire
-  helium-browser-flags.conf
+  helide-browser-flags.conf
   mimeapps.list
   user-dirs.dirs
 )

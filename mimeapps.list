@@ -177,5 +177,10 @@ video/x-ogm=mpv.desktop
 video/x-ogm+ogg=mpv.desktop
 video/x-theora=mpv.desktop
 video/x-theora+ogg=mpv.desktop
+text/html=helide.desktop
+x-scheme-handler/http=helide.desktop
+x-scheme-handler/https=helide.desktop
+x-scheme-handler/about=helide.desktop
+x-scheme-handler/unknown=helide.desktop
 
 [Added Associations]

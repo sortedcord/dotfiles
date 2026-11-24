@@ -77,7 +77,7 @@ input {
 // Three fingers, with any modifiers: Helide gets the swipe (its tab scrubbing);
 // over any other window niri swallows it and does nothing.
 touchpad-gesture fingers=3 modifiers="any" {
-    forward-to-client app-id="^helium$"
+    forward-to-client app-id="^helide$"
 }
 
 // Four fingers: horizontal scrolls columns, vertical switches workspaces. Axes are
@@ -361,10 +361,10 @@ hotkey-overlay {
 // prefer-no-csd
 prefer-no-csd
 
-// Keep Kitty, Helium, and ZapFast transparent backgrounds clear of the focus ring's fill.
+// Keep Kitty, Helide, and ZapFast transparent backgrounds clear of the focus ring's fill.
 window-rule {
     match app-id="^kitty$"
-    match app-id="^helium$"
+    match app-id="^helide$"
     match app-id="^zapfast$"
     draw-border-with-background false
 }

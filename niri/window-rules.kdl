@@ -72,10 +72,10 @@ window-rule {
     // block-out-from "screencast"
 }
 
-// Focus Helium on xdg-activation even without a serial, so opening links from
+// Focus Helide on xdg-activation even without a serial, so opening links from
 // other apps (xdg-open, etc.) switches to the browser instead of just marking it urgent.
 // Requires the sortedcord/niri fork build with on-xdg-activate.
 window-rule {
-    match app-id="^helium$"
+    match app-id="^helide$"
     on-xdg-activate "focus"
 }
