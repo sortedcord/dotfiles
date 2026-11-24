@@ -7,6 +7,14 @@ video = [
     { run = "mpv --hwdec=auto %s", desc = "Play with mpv", orphan = true, for = "linux" },
 ]
 
+audio = [
+    { run = "mpv --no-video %s", desc = "Play with mpv", orphan = true, for = "linux" },
+]
+
+xdg = [
+    { run = "xdg-open %s", desc = "Open with default app", orphan = true, for = "linux" },
+]
+
 wine = [
     { run = "wine %s", desc = "Run with Wine", orphan = true, for = "linux" },
 ]
@@ -19,6 +27,34 @@ prepend_rules = [
     { url = "*.[mM][kK][vV]", use = "video" },
     { url = "*.[wW][eE][bB][mM]", use = "video" },
     { url = "*.[mM][oO][vV]", use = "video" },
+    { url = "*.[aA][vV][iI]", use = "video" },
+    { url = "*.[mM]4[vV]", use = "video" },
+    { url = "*.[mM][pP]3", use = "audio" },
+    { url = "*.[fF][lL][aA][cC]", use = "audio" },
+    { url = "*.[wW][aA][vV]", use = "audio" },
+    { url = "*.[oO][gG][gG]", use = "audio" },
+    { url = "*.[mM]4[aA]", use = "audio" },
+    { url = "*.[oO][pP][uU][sS]", use = "audio" },
+    { url = "*.[jJ][pP][gG]", use = "xdg" },
+    { url = "*.[jJ][pP][eE][gG]", use = "xdg" },
+    { url = "*.[pP][nN][gG]", use = "xdg" },
+    { url = "*.[gG][iI][fF]", use = "xdg" },
+    { url = "*.[wW][eE][bB][pP]", use = "xdg" },
+    { url = "*.[hH][eE][iI][cC]", use = "xdg" },
+    { url = "*.[sS][vV][gG]", use = "xdg" },
+    { url = "*.[pP][dD][fF]", use = "xdg" },
+    { url = "*.[eE][pP][uU][bB]", use = "xdg" },
+    { url = "*.[dD][oO][cC]", use = "xdg" },
+    { url = "*.[dD][oO][cC][xX]", use = "xdg" },
+    { url = "*.[xX][lL][sS]", use = "xdg" },
+    { url = "*.[xX][lL][sS][xX]", use = "xdg" },
+    { url = "*.[pP][pP][tT]", use = "xdg" },
+    { url = "*.[pP][pP][tT][xX]", use = "xdg" },
+    { url = "*.[oO][dD][tT]", use = "xdg" },
+    { url = "*.[oO][dD][sS]", use = "xdg" },
+    { url = "*.[oO][dD][pP]", use = "xdg" },
+    { url = "*.[tT][xX][tT]", use = "edit" },
+    { url = "*.[mM][dD]", use = "edit" },
     { url = "*.[eE][xX][eE]", use = "wine" },
     { url = "*.[mM][sS][iI]", use = "wine" },
 ]
