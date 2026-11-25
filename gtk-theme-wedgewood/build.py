@@ -147,10 +147,10 @@ for version, resource in (
 
 (ROOT / 'index.theme').write_text('''[Desktop Entry]
 Type=X-GNOME-Metatheme
-Name=Tokyo Night Kitty
-Comment=Tokyo Night Storm palette from Kitty
+Name=Wedgewood
+Comment=Wedgewood palette from Kitty
 
 [X-GNOME-Metatheme]
-GtkTheme=TokyoNightKitty
+GtkTheme=Wedgewood
 ''')
 print(f'Built GTK 3/4 theme in {ROOT}')

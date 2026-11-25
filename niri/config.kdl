@@ -326,7 +326,7 @@ layout {
 // Start Quickshell dynamic island and bar.
 spawn-at-startup "quickshell" "--no-duplicate"
 
-// Expose user-local Qt6 style plugins (used by qBittorrent's translucent Tokyo Night style).
+// Expose user-local Qt6 style plugins (used by qBittorrent's translucent Wedgewood style).
 environment {
     QT_PLUGIN_PATH "/home/sortedcord/.local/lib/qt6/plugins"
 }

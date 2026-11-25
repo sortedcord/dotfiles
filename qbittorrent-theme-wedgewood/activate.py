@@ -6,18 +6,18 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parent
-BUNDLE = ROOT / 'tokyo-night-storm.qbtheme'
-STYLE_SRC = ROOT / 'style' / 'tokyonightstyle.cpp'
-STYLE_META = ROOT / 'style' / 'tokyonight.json'
+BUNDLE = ROOT / 'wedgewood.qbtheme'
+STYLE_SRC = ROOT / 'style' / 'wedgewoodstyle.cpp'
+STYLE_META = ROOT / 'style' / 'wedgewood.json'
 
 HOME = Path.home()
 PLUGIN_ROOT = HOME / '.local' / 'lib' / 'qt6' / 'plugins'
-PLUGIN_SO = PLUGIN_ROOT / 'styles' / 'libtokyonightstyle.so'
+PLUGIN_SO = PLUGIN_ROOT / 'styles' / 'libwedgewoodstyle.so'
 ENV_CONF = HOME / '.config' / 'environment.d' / 'qt6-plugins.conf'
 
 QBT_DIR = HOME / '.config' / 'qBittorrent'
 THEMES_DIR = QBT_DIR / 'themes'
-LINK = THEMES_DIR / 'tokyo-night-storm.qbtheme'
+LINK = THEMES_DIR / 'wedgewood.qbtheme'
 CONF = QBT_DIR / 'qBittorrent.conf'
 SYS_DESKTOP = Path('/usr/share/applications/org.qbittorrent.qBittorrent.desktop')
 USER_DESKTOP = HOME / '.local' / 'share' / 'applications' / 'org.qbittorrent.qBittorrent.desktop'
@@ -37,7 +37,7 @@ def build_style_plugin() -> None:
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
-        moc_out = tmp_dir / 'tokyonightstyle.moc'
+        moc_out = tmp_dir / 'wedgewoodstyle.moc'
         subprocess.run([moc, str(STYLE_SRC), '-o', str(moc_out)], check=True)
         subprocess.run(
             [
@@ -161,7 +161,7 @@ def main() -> None:
         CONF,
         {
             'Appearance': {
-                'Style': 'tokyonight',
+                'Style': 'wedgewood',
             },
             'Preferences': {
                 'General\\UseCustomUITheme': 'true',

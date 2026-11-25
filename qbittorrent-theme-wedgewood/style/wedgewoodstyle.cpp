@@ -71,40 +71,32 @@ public:
     }
 };
 
-class TokyoNightStyle final : public QProxyStyle {
-    TranslucentBgFilter *m_paintFilter;
-    WindowCreateFilter *m_createFilter;
+class WedgewoodStyle final : public QProxyStyle {
+    TranslucentBgFilter *m_filter;
 
 public:
-    TokyoNightStyle()
+    WedgewoodStyle()
         : QProxyStyle(QStyleFactory::create(QStringLiteral("Fusion")))
-        , m_paintFilter(new TranslucentBgFilter(this))
-        , m_createFilter(new WindowCreateFilter(m_paintFilter, this)) {
-        QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
-        fmt.setAlphaBufferSize(8);
-        QSurfaceFormat::setDefaultFormat(fmt);
-        if (qApp)
-            qApp->installEventFilter(m_createFilter);
-    }
+        , m_filter(new TranslucentBgFilter(this)) {}
 
     void polish(QWidget *w) override {
-        ensureTranslucentWindow(w, m_paintFilter);
+        ensureTranslucentWindow(w, m_filter);
         QProxyStyle::polish(w);
     }
 };
 
 } // namespace
 
-class TokyoNightStylePlugin final : public QStylePlugin {
+class WedgewoodStylePlugin final : public QStylePlugin {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "tokyonight.json")
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "wedgewood.json")
 
 public:
     QStyle *create(const QString &key) override {
-        if (key.compare(QStringLiteral("tokyonight"), Qt::CaseInsensitive) == 0)
-            return new TokyoNightStyle();
+        if (key.compare(QStringLiteral("wedgewood"), Qt::CaseInsensitive) == 0)
+            return new WedgewoodStyle();
         return nullptr;
     }
 };
 
-#include "tokyonightstyle.moc"
+#include "wedgewoodstyle.moc"

@@ -1,4 +1,4 @@
-# Tokyo Night Kitty
+# Wedgewood (GTK)
 
 A user-local GTK 3 / GTK 4 theme generated from `~/.config/kitty/colors.conf`, with libadwaita palette overrides. Builds on the installed GTK dark theme's widget geometry and assets rather than replacing controls from scratch.
 
@@ -18,17 +18,17 @@ A user-local GTK 3 / GTK 4 theme generated from `~/.config/kitty/colors.conf`, w
 Already activated for this user using:
 
 ```sh
-python3 ~/Projects/gtk-theme-tokyo-night/activate.py
+python3 ~/Projects/dotfiles/gtk-theme-wedgewood/activate.py
 ```
 
-The installer links `~/.local/share/themes/TokyoNightKitty` to this project, sets the GSettings GTK theme and dark preference, updates GTK 3/4 settings, and imports the generated palette in the user GTK CSS files. Existing settings and CSS are backed up before changes; unrelated settings.ini keys are retained. Existing user CSS is replaced (after backup) to prevent conflicting color overrides.
+The installer links `~/.local/share/themes/Wedgewood` to this project, sets the GSettings GTK theme and dark preference, updates GTK 3/4 settings, and imports the generated palette in the user GTK CSS files. Existing settings and CSS are backed up before changes; unrelated settings.ini keys are retained. Existing user CSS is replaced (after backup) to prevent conflicting color overrides.
 
 Keep this project directory in place. Restart applications to pick up all changes; logging out and back in may help apps that cache their settings. No system files, fonts, icon themes, Qt themes, Kitty configuration, or browser themes are changed.
 
 ## Regenerate after changing Kitty colors
 
 ```sh
-python3 ~/Projects/gtk-theme-tokyo-night/build.py
+python3 ~/Projects/dotfiles/gtk-theme-wedgewood/build.py
 ```
 
 Restart GTK applications afterward. This is a snapshot, not a live synchronization service.
@@ -38,7 +38,7 @@ Restart GTK applications afterward. This is a snapshot, not a live synchronizati
 The latest activation backup path is in `last-backup.txt`. Restore it with:
 
 ```sh
-python3 ~/Projects/gtk-theme-tokyo-night/activate.py --restore /path/to/backup
+python3 ~/Projects/dotfiles/gtk-theme-wedgewood/activate.py --restore /path/to/backup
 ```
 
 This restores the previous desktop settings and GTK settings/CSS, including removing files that did not exist before activation. The now-inactive installed theme and project are retained for reuse. Each activation creates a separate backup; restore older backups in reverse order if needed.

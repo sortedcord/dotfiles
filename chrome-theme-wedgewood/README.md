@@ -1,4 +1,4 @@
-# Tokyo Night Storm — Kitty
+# Wedgewood — Chrome
 
 An unpacked Chrome theme based on `/home/sortedcord/.config/kitty/colors.conf`.
 No scripts, permissions, images, or external dependencies.
@@ -8,7 +8,7 @@ No scripts, permissions, images, or external dependencies.
 1. Open `chrome://extensions` in Chrome.
 2. Enable **Developer mode** in the top-right corner.
 3. Click **Load unpacked**.
-4. Select `/home/sortedcord/Projects/chrome-theme-tokyo-night`.
+4. Select `/home/sortedcord/Projects/dotfiles/chrome-theme-wedgewood`.
 5. Open a new tab to see the theme.
 
 If your Linux browser uses a system/GTK theme, choose the Classic/Chrome appearance in Settings → Appearance before loading this theme. Browser versions may label these options differently.

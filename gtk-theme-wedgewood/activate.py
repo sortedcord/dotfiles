@@ -11,7 +11,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parent
 HOME = Path.home()
 SCHEMA = 'org.gnome.desktop.interface'
-THEME = HOME / '.local/share/themes/TokyoNightKitty'
+THEME = HOME / '.local/share/themes/Wedgewood'
 FILES = [HOME / '.config' / f'gtk-{version}' / name
          for version in ('3.0', '4.0') for name in ('settings.ini', 'gtk.css')]
 
@@ -69,7 +69,7 @@ else:
         config.read(settings)
         if not config.has_section('Settings'):
             config.add_section('Settings')
-        config['Settings']['gtk-theme-name'] = 'TokyoNightKitty'
+        config['Settings']['gtk-theme-name'] = 'Wedgewood'
         config['Settings']['gtk-application-prefer-dark-theme'] = 'true'
         if settings.is_symlink():
             settings.unlink()
@@ -79,10 +79,10 @@ else:
         if css.is_symlink():
             css.unlink()
         # Existing user CSS is backed up, not imported: its colors could win.
-        css.write_text(f'/* Tokyo Night Kitty user palette override. */\n'
+        css.write_text(f'/* Wedgewood user palette override. */\n'
                        f'@import url("{(ROOT / f"gtk-{version}" / "palette.css").as_uri()}");\n')
-    setting('gtk-theme', 'TokyoNightKitty')
+    setting('gtk-theme', 'Wedgewood')
     setting('color-scheme', 'prefer-dark')
     (ROOT / 'last-backup.txt').write_text(str(backup) + '\n')
-    print(f'Activated TokyoNightKitty. Backup: {backup}')
+    print(f'Activated Wedgewood. Backup: {backup}')
     print(f'Undo: python3 {ROOT / "activate.py"} --restore {backup}')

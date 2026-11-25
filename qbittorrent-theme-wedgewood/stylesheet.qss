@@ -1,7 +1,7 @@
-/* Tokyo Night Storm — qBittorrent theme (derived from Kitty colors.conf)
+/* Wedgewood — qBittorrent theme (derived from Kitty colors.conf)
  *
  * Background-only translucency (85% opacity, matching Kitty's background_opacity 0.85)
- * with 100% opaque text, borders, and icons. Requires the `tokyonight` Qt6 style plugin
+ * with 100% opaque text, borders, and icons. Requires the `wedgewood` Qt6 style plugin
  * to enable Qt::WA_TranslucentBackground on top-level windows.
  *
  * Palette:

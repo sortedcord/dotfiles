@@ -3,7 +3,7 @@
 # Any existing file/folder/symlink at a target path is renamed to <name>.old first.
 # Set TARGET to override the destination, e.g. TARGET=/tmp/test ./install.sh
 # The GTK theme and the system keyd config (/etc/keyd) are only installed when TARGET is not overridden.
-# Also installs the GTK theme (gtk-theme-tokyo-night) via its activate.py.
+# Also installs the GTK theme (gtk-theme-wedgewood) and qBittorrent theme (qbittorrent-theme-wedgewood) via their activate.py scripts.
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -132,11 +132,11 @@ if [ "$INSTALL_SYSTEM" -eq 1 ]; then
   fi
 fi
 
-# GTK theme: links ~/.local/share/themes/TokyoNightKitty to the repo and
+# GTK theme: links ~/.local/share/themes/Wedgewood to the repo and
 # applies it (sets GTK 3/4 settings and CSS, backs up the previous ones).
 if [ "$INSTALL_GTK" -eq 1 ]; then
-  gtk_dir="$DOTFILES/gtk-theme-tokyo-night"
-  gtk_link="$HOME/.local/share/themes/TokyoNightKitty"
+  gtk_dir="$DOTFILES/gtk-theme-wedgewood"
+  gtk_link="$HOME/.local/share/themes/Wedgewood"
 
   if [ -L "$gtk_link" ] && [ "$(readlink -f "$gtk_link")" = "$(readlink -f "$gtk_dir")" ]; then
     echo "ok:      GTK theme already installed"
@@ -150,11 +150,11 @@ if [ "$INSTALL_GTK" -eq 1 ]; then
   fi
 
   # qBittorrent theme: builds the translucent Qt6 style plugin, links
-  # ~/.config/qBittorrent/themes/tokyo-night-storm.qbtheme, and enables both.
-  qbt_dir="$DOTFILES/qbittorrent-theme-tokyo-night"
-  qbt_link="$HOME/.config/qBittorrent/themes/tokyo-night-storm.qbtheme"
-  qbt_plugin="$HOME/.local/lib/qt6/plugins/styles/libtokyonightstyle.so"
-  if [ -L "$qbt_link" ] && [ "$(readlink -f "$qbt_link")" = "$(readlink -f "$qbt_dir/tokyo-night-storm.qbtheme")" ] && [ -f "$qbt_plugin" ] && [ "$qbt_plugin" -nt "$qbt_dir/style/tokyonightstyle.cpp" ] && [ -f "$HOME/.local/share/applications/org.qbittorrent.qBittorrent.desktop" ]; then
+  # ~/.config/qBittorrent/themes/wedgewood.qbtheme, and enables both.
+  qbt_dir="$DOTFILES/qbittorrent-theme-wedgewood"
+  qbt_link="$HOME/.config/qBittorrent/themes/wedgewood.qbtheme"
+  qbt_plugin="$HOME/.local/lib/qt6/plugins/styles/libwedgewoodstyle.so"
+  if [ -L "$qbt_link" ] && [ "$(readlink -f "$qbt_link")" = "$(readlink -f "$qbt_dir/wedgewood.qbtheme")" ] && [ -f "$qbt_plugin" ] && [ "$qbt_plugin" -nt "$qbt_dir/style/wedgewoodstyle.cpp" ] && [ -f "$HOME/.local/share/applications/org.qbittorrent.qBittorrent.desktop" ]; then
     echo "ok:      qBittorrent theme already installed"
   else
     if [ -L "$qbt_link" ] && [ ! -e "$qbt_link" ]; then

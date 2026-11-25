@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Tokyo Night Storm — Kitty",
+  "name": "Wedgewood",
   "version": "1.0.0",
-  "description": "A dark Chrome theme matching the Tokyo Night Terminal Storm palette in your Kitty configuration.",
+  "description": "A dark Chrome theme matching the Wedgewood palette in your Kitty configuration.",
   "theme": {
     "colors": {
       "frame": [14, 16, 23],

@@ -1,5 +1,5 @@
 themes {
-    kitty-tokyo-night-storm {
+    wedgewood {
         text_unselected {
             base 120 124 153
             background 14 16 23
