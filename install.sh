@@ -154,7 +154,7 @@ if [ "$INSTALL_GTK" -eq 1 ]; then
   qbt_dir="$DOTFILES/qbittorrent-theme-tokyo-night"
   qbt_link="$HOME/.config/qBittorrent/themes/tokyo-night-storm.qbtheme"
   qbt_plugin="$HOME/.local/lib/qt6/plugins/styles/libtokyonightstyle.so"
-  if [ -L "$qbt_link" ] && [ "$(readlink -f "$qbt_link")" = "$(readlink -f "$qbt_dir/tokyo-night-storm.qbtheme")" ] && [ -f "$qbt_plugin" ]; then
+  if [ -L "$qbt_link" ] && [ "$(readlink -f "$qbt_link")" = "$(readlink -f "$qbt_dir/tokyo-night-storm.qbtheme")" ] && [ -f "$qbt_plugin" ] && [ "$qbt_plugin" -nt "$qbt_dir/style/tokyonightstyle.cpp" ] && [ -f "$HOME/.local/share/applications/org.qbittorrent.qBittorrent.desktop" ]; then
     echo "ok:      qBittorrent theme already installed"
   else
     if [ -L "$qbt_link" ] && [ ! -e "$qbt_link" ]; then

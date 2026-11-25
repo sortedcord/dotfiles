@@ -1,3 +1,4 @@
+#include <QApplication>
 #include <QColor>
 #include <QEvent>
 #include <QPaintEvent>
@@ -5,9 +6,32 @@
 #include <QProxyStyle>
 #include <QStyleFactory>
 #include <QStylePlugin>
+#include <QSurfaceFormat>
 #include <QWidget>
+#include <QWindow>
 
 namespace {
+
+void ensureTranslucentWindow(QWidget *w, QObject *paintFilter) {
+    if (!w || !w->isWindow())
+        return;
+
+    if (!w->testAttribute(Qt::WA_TranslucentBackground))
+        w->setAttribute(Qt::WA_TranslucentBackground, true);
+
+    if (auto *wh = w->windowHandle(); wh && wh->format().alphaBufferSize() < 8) {
+        auto fmt = wh->format();
+        fmt.setAlphaBufferSize(8);
+        wh->setFormat(fmt);
+        if (wh->handle()) {
+            wh->destroy();
+            wh->create();
+        }
+    }
+
+    w->removeEventFilter(paintFilter);
+    w->installEventFilter(paintFilter);
+}
 
 class TranslucentBgFilter final : public QObject {
 public:
@@ -30,20 +54,41 @@ public:
     }
 };
 
+class WindowCreateFilter final : public QObject {
+    TranslucentBgFilter *m_paintFilter;
+
+public:
+    WindowCreateFilter(TranslucentBgFilter *paintFilter, QObject *parent)
+        : QObject(parent)
+        , m_paintFilter(paintFilter) {}
+
+    bool eventFilter(QObject *obj, QEvent *ev) override {
+        if (ev->type() == QEvent::WinIdChange || ev->type() == QEvent::Show) {
+            if (auto *w = qobject_cast<QWidget *>(obj); w && w->isWindow())
+                ensureTranslucentWindow(w, m_paintFilter);
+        }
+        return false;
+    }
+};
+
 class TokyoNightStyle final : public QProxyStyle {
-    TranslucentBgFilter *m_filter;
+    TranslucentBgFilter *m_paintFilter;
+    WindowCreateFilter *m_createFilter;
 
 public:
     TokyoNightStyle()
         : QProxyStyle(QStyleFactory::create(QStringLiteral("Fusion")))
-        , m_filter(new TranslucentBgFilter(this)) {}
+        , m_paintFilter(new TranslucentBgFilter(this))
+        , m_createFilter(new WindowCreateFilter(m_paintFilter, this)) {
+        QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
+        fmt.setAlphaBufferSize(8);
+        QSurfaceFormat::setDefaultFormat(fmt);
+        if (qApp)
+            qApp->installEventFilter(m_createFilter);
+    }
 
     void polish(QWidget *w) override {
-        if (w && w->isWindow()) {
-            w->setAttribute(Qt::WA_TranslucentBackground, true);
-            w->removeEventFilter(m_filter);
-            w->installEventFilter(m_filter);
-        }
+        ensureTranslucentWindow(w, m_paintFilter);
         QProxyStyle::polish(w);
     }
 };

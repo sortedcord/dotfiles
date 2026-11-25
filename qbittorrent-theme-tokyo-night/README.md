@@ -11,7 +11,7 @@ A static `.qbtheme` bundle for qBittorrent v5+ based on `kitty/colors.conf`, wit
 - `style/`: Minimal Qt6 `QProxyStyle` plugin (`tokyonight`) that enables `Qt::WA_TranslucentBackground` on top-level windows and paints the 85% `#0e1017` window background without fading text or icons.
 - `resources.qrc`: Qt resource manifest.
 - `tokyo-night-storm.qbtheme`: Compiled binary Qt resource bundle.
-- `activate.py`: Builds `libtokyonightstyle.so` into `~/.local/lib/qt6/plugins/styles/`, writes `~/.config/environment.d/qt6-plugins.conf`, symlinks `tokyo-night-storm.qbtheme` into `~/.config/qBittorrent/themes/`, and enables both in `~/.config/qBittorrent/qBittorrent.conf`.
+- `activate.py`: Builds `libtokyonightstyle.so` into `~/.local/lib/qt6/plugins/styles/`, writes `~/.config/environment.d/qt6-plugins.conf` and `~/.local/share/applications/org.qbittorrent.qBittorrent.desktop`, symlinks `tokyo-night-storm.qbtheme` into `~/.config/qBittorrent/themes/`, and enables both in `~/.config/qBittorrent/qBittorrent.conf`.
 
 ## Install
 

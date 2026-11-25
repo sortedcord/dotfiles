@@ -19,6 +19,8 @@ QBT_DIR = HOME / '.config' / 'qBittorrent'
 THEMES_DIR = QBT_DIR / 'themes'
 LINK = THEMES_DIR / 'tokyo-night-storm.qbtheme'
 CONF = QBT_DIR / 'qBittorrent.conf'
+SYS_DESKTOP = Path('/usr/share/applications/org.qbittorrent.qBittorrent.desktop')
+USER_DESKTOP = HOME / '.local' / 'share' / 'applications' / 'org.qbittorrent.qBittorrent.desktop'
 
 
 def build_style_plugin() -> None:
@@ -55,6 +57,22 @@ def ensure_env_conf() -> None:
     if not ENV_CONF.exists() or ENV_CONF.read_text(encoding='utf-8') != desired:
         ENV_CONF.write_text(desired, encoding='utf-8')
         print(f'Updated {ENV_CONF}')
+
+
+def ensure_desktop_entry() -> None:
+    if not SYS_DESKTOP.exists():
+        return
+    USER_DESKTOP.parent.mkdir(parents=True, exist_ok=True)
+    text = SYS_DESKTOP.read_text(encoding='utf-8')
+    updated = re.sub(
+        r'^Exec=qbittorrent\b',
+        f'Exec=env QT_PLUGIN_PATH={PLUGIN_ROOT} qbittorrent',
+        text,
+        flags=re.MULTILINE,
+    )
+    if not USER_DESKTOP.exists() or USER_DESKTOP.read_text(encoding='utf-8') != updated:
+        USER_DESKTOP.write_text(updated, encoding='utf-8')
+        print(f'Updated {USER_DESKTOP}')
 
 
 def update_ini_sections(conf_path: Path, section_updates: dict[str, dict[str, str]]) -> None:
@@ -127,6 +145,7 @@ def main() -> None:
 
     build_style_plugin()
     ensure_env_conf()
+    ensure_desktop_entry()
 
     THEMES_DIR.mkdir(parents=True, exist_ok=True)
     if LINK.is_symlink():
