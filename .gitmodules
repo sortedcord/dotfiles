@@ -4,5 +4,5 @@
 	branch = master
 [submodule "quickshell"]
 	path = quickshell
-	url = git@github.com:sortedcord/doalot.git
+	url = git@github.com:Wedgewood-shell/shell.git
 	branch = main
