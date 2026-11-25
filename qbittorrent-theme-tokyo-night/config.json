@@ -1,9 +1,9 @@
 {
   "colors": {
-    "Palette.Window": "#0e1017",
+    "Palette.Window": "#d90e1017",
     "Palette.WindowText": "#D5D6DB",
-    "Palette.Base": "#0e1017",
-    "Palette.AlternateBase": "#161925",
+    "Palette.Base": "#000e1017",
+    "Palette.AlternateBase": "#4024283B",
     "Palette.Text": "#D5D6DB",
     "Palette.ToolTipBase": "#24283B",
     "Palette.ToolTipText": "#D5D6DB",

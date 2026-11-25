@@ -326,6 +326,11 @@ layout {
 // Start Quickshell dynamic island and bar.
 spawn-at-startup "quickshell" "--no-duplicate"
 
+// Expose user-local Qt6 style plugins (used by qBittorrent's translucent Tokyo Night style).
+environment {
+    QT_PLUGIN_PATH "/home/sortedcord/.local/lib/qt6/plugins"
+}
+
 // Polkit authentication agent (password/Howdy prompts, Bitwarden biometrics).
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 

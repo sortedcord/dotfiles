@@ -1,68 +1,122 @@
 #!/usr/bin/env python3
-"""Link the Tokyo Night Storm .qbtheme into ~/.config/qBittorrent/themes and enable it."""
+"""Build the translucent Qt6 style plugin, link the .qbtheme, and enable both for qBittorrent."""
 from pathlib import Path
 import re
+import subprocess
+import tempfile
 
 ROOT = Path(__file__).resolve().parent
 BUNDLE = ROOT / 'tokyo-night-storm.qbtheme'
-QBT_DIR = Path.home() / '.config' / 'qBittorrent'
+STYLE_SRC = ROOT / 'style' / 'tokyonightstyle.cpp'
+STYLE_META = ROOT / 'style' / 'tokyonight.json'
+
+HOME = Path.home()
+PLUGIN_ROOT = HOME / '.local' / 'lib' / 'qt6' / 'plugins'
+PLUGIN_SO = PLUGIN_ROOT / 'styles' / 'libtokyonightstyle.so'
+ENV_CONF = HOME / '.config' / 'environment.d' / 'qt6-plugins.conf'
+
+QBT_DIR = HOME / '.config' / 'qBittorrent'
 THEMES_DIR = QBT_DIR / 'themes'
 LINK = THEMES_DIR / 'tokyo-night-storm.qbtheme'
 CONF = QBT_DIR / 'qBittorrent.conf'
 
 
-def update_conf(conf_path: Path, theme_path: Path) -> None:
-    updates = {
-        'General\\UseCustomUITheme': 'true',
-        'General\\CustomUIThemePath': str(theme_path),
-    }
+def build_style_plugin() -> None:
+    PLUGIN_SO.parent.mkdir(parents=True, exist_ok=True)
+    if PLUGIN_SO.exists():
+        so_mtime = PLUGIN_SO.stat().st_mtime
+        if so_mtime >= STYLE_SRC.stat().st_mtime and so_mtime >= STYLE_META.stat().st_mtime:
+            return
+
+    moc = '/usr/lib/qt6/moc'
+    cflags_libs = subprocess.check_output(
+        ['pkg-config', '--cflags', '--libs', 'Qt6Widgets'], text=True
+    ).split()
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_dir = Path(tmp)
+        moc_out = tmp_dir / 'tokyonightstyle.moc'
+        subprocess.run([moc, str(STYLE_SRC), '-o', str(moc_out)], check=True)
+        subprocess.run(
+            [
+                'g++', '-std=c++17', '-O2', '-fPIC', '-shared',
+                f'-I{tmp_dir}', f'-I{STYLE_SRC.parent}',
+                str(STYLE_SRC), '-o', str(PLUGIN_SO),
+                *cflags_libs,
+            ],
+            check=True,
+        )
+    print(f'Built Qt6 style plugin: {PLUGIN_SO}')
+
+
+def ensure_env_conf() -> None:
+    ENV_CONF.parent.mkdir(parents=True, exist_ok=True)
+    desired = f'QT_PLUGIN_PATH={PLUGIN_ROOT}\n'
+    if not ENV_CONF.exists() or ENV_CONF.read_text(encoding='utf-8') != desired:
+        ENV_CONF.write_text(desired, encoding='utf-8')
+        print(f'Updated {ENV_CONF}')
+
+
+def update_ini_sections(conf_path: Path, section_updates: dict[str, dict[str, str]]) -> None:
     if not conf_path.exists():
         conf_path.parent.mkdir(parents=True, exist_ok=True)
-        lines = ['[Preferences]'] + [f'{k}={v}' for k, v in updates.items()]
+        lines = []
+        for section, updates in section_updates.items():
+            if lines:
+                lines.append('')
+            lines.append(f'[{section}]')
+            for k, v in updates.items():
+                lines.append(f'{k}={v}')
         conf_path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
         return
 
     lines = conf_path.read_text(encoding='utf-8').splitlines()
     out = []
-    in_prefs = False
-    found_prefs = False
-    seen = set()
+    current_section = None
+    seen_sections = set()
+    seen_keys: dict[str, set[str]] = {s: set() for s in section_updates}
+
+    def flush_missing(section: str | None) -> None:
+        if section and section in section_updates:
+            insert_at = len(out)
+            while insert_at > 0 and out[insert_at - 1] == '':
+                insert_at -= 1
+            missing = [
+                f'{k}={v}'
+                for k, v in section_updates[section].items()
+                if k not in seen_keys[section]
+            ]
+            if missing:
+                out[insert_at:insert_at] = missing
+                seen_keys[section].update(section_updates[section].keys())
 
     for line in lines:
         section_match = re.match(r'^\s*\[([^\]]+)\]\s*$', line)
         if section_match:
-            if in_prefs:
-                insert_at = len(out)
-                while insert_at > 0 and out[insert_at - 1] == '':
-                    insert_at -= 1
-                new_lines = [f'{k}={v}' for k, v in updates.items() if k not in seen]
-                out[insert_at:insert_at] = new_lines
-                seen.update(updates.keys())
-            in_prefs = section_match.group(1) == 'Preferences'
-            if in_prefs:
-                found_prefs = True
+            flush_missing(current_section)
+            current_section = section_match.group(1)
+            seen_sections.add(current_section)
             out.append(line)
             continue
 
-        if in_prefs and '=' in line:
+        if current_section in section_updates and '=' in line:
             key = line.split('=', 1)[0].strip()
-            if key in updates:
-                out.append(f'{key}={updates[key]}')
-                seen.add(key)
+            if key in section_updates[current_section]:
+                out.append(f'{key}={section_updates[current_section][key]}')
+                seen_keys[current_section].add(key)
                 continue
 
         out.append(line)
 
-    if in_prefs:
-        for k, v in updates.items():
-            if k not in seen:
+    flush_missing(current_section)
+
+    for section, updates in section_updates.items():
+        if section not in seen_sections:
+            if out and out[-1] != '':
+                out.append('')
+            out.append(f'[{section}]')
+            for k, v in updates.items():
                 out.append(f'{k}={v}')
-    elif not found_prefs:
-        if out and out[-1] != '':
-            out.append('')
-        out.append('[Preferences]')
-        for k, v in updates.items():
-            out.append(f'{k}={v}')
 
     conf_path.write_text('\n'.join(out) + '\n', encoding='utf-8')
 
@@ -70,6 +124,9 @@ def update_conf(conf_path: Path, theme_path: Path) -> None:
 def main() -> None:
     if not BUNDLE.exists():
         raise SystemExit(f'Missing theme bundle: {BUNDLE}')
+
+    build_style_plugin()
+    ensure_env_conf()
 
     THEMES_DIR.mkdir(parents=True, exist_ok=True)
     if LINK.is_symlink():
@@ -81,7 +138,18 @@ def main() -> None:
     else:
         LINK.symlink_to(BUNDLE)
 
-    update_conf(CONF, LINK)
+    update_ini_sections(
+        CONF,
+        {
+            'Appearance': {
+                'Style': 'tokyonight',
+            },
+            'Preferences': {
+                'General\\UseCustomUITheme': 'true',
+                'General\\CustomUIThemePath': str(LINK),
+            },
+        },
+    )
     print(f'Activated qBittorrent theme: {LINK}')
     print(f'Updated {CONF} (restart qBittorrent to apply)')
 

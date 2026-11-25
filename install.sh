@@ -149,12 +149,13 @@ if [ "$INSTALL_GTK" -eq 1 ]; then
     python3 "$gtk_dir/activate.py"
   fi
 
-  # qBittorrent theme: links ~/.config/qBittorrent/themes/tokyo-night-storm.qbtheme
-  # and enables it in ~/.config/qBittorrent/qBittorrent.conf.
+  # qBittorrent theme: builds the translucent Qt6 style plugin, links
+  # ~/.config/qBittorrent/themes/tokyo-night-storm.qbtheme, and enables both.
   qbt_dir="$DOTFILES/qbittorrent-theme-tokyo-night"
   qbt_link="$HOME/.config/qBittorrent/themes/tokyo-night-storm.qbtheme"
-  if [ -L "$qbt_link" ] && [ "$(readlink -f "$qbt_link")" = "$(readlink -f "$qbt_dir/tokyo-night-storm.qbtheme")" ]; then
-    echo "ok:      qBittorrent theme already linked"
+  qbt_plugin="$HOME/.local/lib/qt6/plugins/styles/libtokyonightstyle.so"
+  if [ -L "$qbt_link" ] && [ "$(readlink -f "$qbt_link")" = "$(readlink -f "$qbt_dir/tokyo-night-storm.qbtheme")" ] && [ -f "$qbt_plugin" ]; then
+    echo "ok:      qBittorrent theme already installed"
   else
     if [ -L "$qbt_link" ] && [ ! -e "$qbt_link" ]; then
       rm "$qbt_link"
