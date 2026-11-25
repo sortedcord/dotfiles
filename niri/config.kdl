@@ -361,11 +361,12 @@ hotkey-overlay {
 // prefer-no-csd
 prefer-no-csd
 
-// Keep Kitty, Helide, and ZapFast transparent backgrounds clear of the focus ring's fill.
+// Keep Kitty, Helide, ZapFast, and qBittorrent transparent backgrounds clear of the focus ring's fill.
 window-rule {
     match app-id="^kitty$"
     match app-id="^helide$"
     match app-id="^zapfast$"
+    match app-id=r#"^org\.qbittorrent\.qBittorrent$"#
     draw-border-with-background false
 }
 

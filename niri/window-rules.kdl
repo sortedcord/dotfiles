@@ -79,3 +79,9 @@ window-rule {
     match app-id="^helide$"
     on-xdg-activate "focus"
 }
+
+// Make qBittorrent semi-transparent so the desktop wallpaper shows through.
+window-rule {
+    match app-id=r#"^org\.qbittorrent\.qBittorrent$"#
+    opacity 0.88
+}
